@@ -1,0 +1,78 @@
+<div class="content">
+    <div class="container-fluid container data-main-content">
+        <div class="row">
+            <div class="col data-content">
+                <div class="row sm-breadcrumbs">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+                        »
+                    </div>
+                </div>
+                <h1>Реферальная программа</h1>
+                <div class="h15"></div>
+                <div class="data-inner-content">
+                    <script>
+                        function openHide(x,t)
+                        {
+                            console.log(t);
+                            var u = x.getElementsByTagName('ul'), i = 0;
+                            while(u[i])
+                            {
+                                if(u[i].parentNode == x)
+                                    if(u[i].style.display == 'none') {
+                                        u[i].style.display = 'block';
+                                        /*t.removeClass('plus');*/
+                                        t.className = t.className.replace('plus', 'minus')
+                                    }else {
+                                        u[i].style.display = 'none';
+                                        t.className = t.className.replace('minus', 'plus')
+                                    }
+                                ++i;
+                            }
+                        }
+                    </script>
+                    <div id="tree">
+                    {function name=print_tree level=0}
+                        <ul class="item level{$level} {if $level == 0}active {/if}" data-level="{$level}" {if $level != 0}style="display: none"{/if}>
+                            {foreach $data.childs as $entry}
+                                {if is_array($entry)}
+                                    <li class="tree-item ilevel{$level}` {if !empty($entry.childs)}has-child plus{/if} {if $level == 0} tree-first-element{/if}" onclick="openHide(this.parentNode,this)"><img class='ref-avatar' src='{$entry.img_url}'><div class="tree-child-name">{$entry.name}{if $level == 0} (это Вы){/if}</div></li>
+                                    {print_tree data=$entry level=$level+1}
+                                {else}
+                                    <li>{$entry}</li>
+                                {/if}
+                            {/foreach}
+                        </ul>
+                    {/function}
+                    {print_tree data=$user_tree}
+                    </div>
+                </div>
+            </div>
+            <script>
+                $(document).ready(function(){
+
+                    $('.item').on('click',function(e){
+                        /*e.preventDefault();
+                        let child_elem = $(this).find('.item.level'+(parseInt($(this).attr('data-level'))+1));
+                        let item = $(this).find('.tree-item.has-child.ilevel'+parseInt($(this).attr('data-level')));
+                        if(item.hasClass("plus")){
+                            item.removeClass("plus");
+                            item.addClass("minus");
+                            child_elem.css('display','block');
+                        }else{
+                            item.removeClass("minus");
+                            item.addClass("plus");
+                            child_elem.css('display','none');
+                        }*/
+                    });
+                });
+            </script>
+            <div class="col sidebar">
+                {include file="`$wa_active_theme_path`/sidebar.html" inline}
+            </div>
+        </div>
+    </div>
+</div>

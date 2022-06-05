@@ -1,0 +1,47 @@
+<div id="reports-paid-orders-notice" class="s-alert" style="display:none;">
+    <a href="javascript:void(0)" class="close s-alert-close">×</a>
+    Только заказы, которые были оплачены реальными деньгами будут отображаться в отчетах. Если пользователь произвел оплату с внутреннего счета, то здесь это не отобразится.</div>
+<div id="mainmenu" class=" float-right">
+    <ul class="menu-h dropdown s-reports-timeframe" style="float: right;">
+        <li class="hidden s-custom-timeframe">
+            [`from`] <input type="text" name="from">
+            [`to`] <input type="text" name="to">
+            <select name="groupby">
+                <option value="days">[`by day`]</option>
+                <option value="months">[`by month`]</option>
+            </select>
+        </li>
+        <li class="s-reports-timeframe-dropdown">
+            <a href="javascript:void(0)" class="inline-link float-right"><b><i>{* Changed by JS *}</i></b>
+                <i class="icon10 darr"></i>
+            </a>
+            <ul class="menu-v">
+                <li data-timeframe="30" data-groupby="days" class="selected"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 30)}</a></li>
+                <li data-timeframe="90" data-groupby="days" data-default-choice="1"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 90)}</a></li>
+                <li data-timeframe="365" data-groupby="months"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 365)}</a></li>
+                <li data-timeframe="all" data-groupby="months"><a href="javascript:void(0)" class="nowrap">[`All time`]</a></li>
+                <li data-timeframe="custom"><a href="javascript:void(0)" class="nowrap">[`Select dates...`]</a></li>
+            </ul>
+        </li>
+    </ul>
+    <div id="s-reports-custom-controls" class="float-right"></div>
+</div>
+<div id="reportscontent">
+    <div class="block double-padded ">
+        [`Loading...`] <i class="icon16 loading"></i>
+    </div>
+</div>
+
+<!-- D3 Charts -->
+<link rel="stylesheet" href="{$wa_app_static_url}css/charts.css?v={$wa->version()}">
+<script src="{$wa_app_static_url}js/charts/d3.min.js?v{$wa->version()}"></script>
+<script src="{$wa_app_static_url}js/charts/topojson.min.js?v{$wa->version()}"></script>
+<script src="{$wa_app_static_url}js/charts/datamaps.world.min.js?v{$wa->version()}"></script>
+
+<script src="{$wa_app_static_url}js/reports.js?v={$wa->version()}"></script>
+<script> $.reports.init({ lang: '{$lang}' }); </script>
+<style>
+    ul.menu-h.dropdown ul li {
+        padding: 6px!important;
+    }
+</style>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE theme PUBLIC "wa-app-theme" "http://www.webasyst.com/wa-content/xml/wa-app-theme.dtd">
+<theme id="smotron_old" system="0" vendor="995002" author="WA-PRO" app="sm" version="1.0.0">
+    <name locale="en_US">SMOTRON.TV</name>
+    <name locale="ru_RU">СМОТРОН.ТВ</name>
+    <files>
+        <file path="index.html">
+        </file>
+        <file path="smotron.css">
+        </file>
+		<file path="head.html">
+            <description locale="en_US">App HEAD section</description>
+            <description locale="ru_RU">Секция HEAD приложения</description>
+        </file>
+        <file path="home.html">
+            <description locale="en_US">Storefront homepage</description>
+            <description locale="ru_RU">Главная витрина магазина</description>
+        </file>
+    </files>
+    <settings>
+		<setting var="header_sitename" control_type="text">
+			<value>Интернет-система создания и трансляции видеопотоков “Смотрон”</value>
+			<name locale="en_US">Header site name</name>
+			<name locale="ru_RU">Название сайта в верхнем меню</name>			  
+		</setting>
+		
+		<setting var="youtube" control_type="text">
+			<value>https://www.youtube.com/</value>
+			<name locale="en_US">YouTube Channel Link</name>
+			<name locale="ru_RU">Ссылка на youtube канал</name>			  
+		</setting>
+		<setting var="vk" control_type="text">
+			<value>https://www.vk.com/</value>
+			<name locale="en_US">vk Link</name>
+			<name locale="ru_RU">Ссылка на vk</name>			  
+		</setting>
+		<setting var="inst" control_type="text">
+			<value>http://instagram.com</value>
+			<name locale="en_US">instagram Link</name>
+			<name locale="ru_RU">Ссылка на instagram</name>			  
+		</setting>
+		<setting var="logo" control_type="image">
+			<value>img/logo.png</value>
+			<filename>img/logo.*</filename>
+			<name locale="en_US">Logo</name>
+			<name locale="ru_RU">Логотип</name>
+		</setting>
+	</settings>
+    <thumbs>
+    </thumbs>
+     <about locale="en_US">
+        <![CDATA[<p>Special for SMOTRON.TV by WA-PRO</p>]]>
+    </about>
+    <about locale="ru_RU">
+        <![CDATA[<p>Специально для СМОТРОН.ТВ от команды WA-PRO</p>]]>
+    </about>
+    <locales></locales>
+</theme>

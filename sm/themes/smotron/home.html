@@ -1,0 +1,254 @@
+<div class="container-fluid container">
+	<div class="home-slider">
+		{$photos = $wa->photos->photos('album/1', '1280x500')}
+		<div class="bx-home">
+			{foreach $photos as $photo}
+				{$photo.description = explode('|', $photo.description)}
+				<div class="bx-home-item" style="background: url({$photo.thumb_1280x500.url|escape});" title="{$photo.name|escape}" data-text="{$photo.description.0|escape}" {if isset($photo.description.1)}data-url="{$photo.description.1|escape}"{/if}>
+					<div class="bx-home-item-data">
+						<div class="bx-home-item-data-texts">
+							<div class="bx-home-item-caption proxima">{$photo.name|escape}</div>
+							<div class="bx-home-item-text">{$photo.description.0|escape}</div>
+							{if isset($photo.description.1)}
+							<div class="bx-home-item-link">
+								<a href="{$photo.description.1|escape}">Подробнее</a>
+							</div>
+							{/if}
+						</div>
+					</div>
+				</div>
+			{/foreach}
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.bx-home').bxSlider({
+			easing: 'ease-in-out',
+			captions: true,
+			pager: false,
+			auto: true,
+			pause: 10000,
+			stopAutoOnClick: true,
+		});
+	});
+</script>
+<div class="container-fluid container">
+	<div class="row">
+		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="home-about">
+				<div class="home-about-logo">
+					<div class="home-about-logo-inner">
+						<img src="{$wa_theme_url}img/smotron-white.png">
+						<div class="home-about-logo-text">ТВ для дома и бизнеса</div>
+					</div>
+				</div>
+				<div class="home-about-text">
+					<div class="home-about-text-inner">
+						<h1>Смотрон.ТВ - телевидение для дома и бизнеса</h1>
+						<p>{$wa->block("home.about")}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container-fluid container">
+	<div class="row">
+		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="sm-caption">
+				<h2>Преимущества Смотрон</h2>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container-fluid container">
+	<div class="row">
+		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="home-advantages">
+				{$wa->block("home.advantages")}
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.home-advantages').slick({
+			infinite: true,
+				slidesToShow: 3,
+				slidesToScroll: 3,
+				adaptiveHeight: true,
+				responsive: [
+				{
+					breakpoint: 1151,
+					settings: {
+						slidesToShow: 3,
+						slidesToScroll: 3,
+					}
+				},
+				{
+					breakpoint: 768,
+					settings: {
+						slidesToShow: 2,
+						slidesToScroll: 2,
+					}
+				},
+				{
+					breakpoint: 576,
+					settings: {
+						slidesToShow: 1,
+						slidesToScroll: 1,
+					}
+				}
+			]
+		});
+	});
+</script>
+<div class="container-fluid container">
+	<div class="row">
+		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="sm-caption">
+				<h2>Покрытие</h2>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container-fluid container">
+	<div class="row">
+		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="home-channels">
+				{$channels = $wa->sm->getChannels()}
+				<div class="row">
+					{foreach $channels as $channel name=hchannels}
+						<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 home-channel">
+							<div class="home-channel-image" style="background: url('{$channel.image|escape}')"></div>
+							<div class="home-channel-name">{$channel.name|escape}</div>
+						</div>
+						{if $smarty.foreach.hchannels.iteration == 8}{break}{/if}
+					{/foreach}
+				</div>
+			</div>
+			<div class="home-channels-full">
+				<a href="/info/coverage/">Все {count($channels)} {$wa->sm->skl(count($channels), 'канал', 'канала', 'каналов')}</a>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="home-try-wrapper">
+	<div class="container-fluid container">
+		<div class="row">
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 home-try">
+				<div class="home-try-inner">
+					<div class="home-try-inner-texts">
+						<div class="home-try-caption proxima">ПРОВЕРЬТЕ САМИ</div>
+						<div class="home-try-text">Запустите трансляцию чтобы увидеть, как работает Смотрон</div>
+					</div>
+					<div class="home-try-go">
+						<a href="{$wa->getUrl('sm/frontend/preview')}"><div class="home-try-go-icon icon play-orange"></div></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container-fluid container">
+	<div class="row">
+		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="sm-caption">
+				<h2>Тарифы</h2>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container-fluid container">
+	<div class="row">
+		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="home-tariffs">
+				{$tariffs = $wa->sm->getBaseTariffs()}
+				{foreach $tariffs as $tariff}
+					<div class="home-tariff">
+						<div class="home-tariff-inner">
+							<div class="home-tariff-caption">{$tariff.name|escape}</div>
+							<div class="home-tariff-summary">{ifempty($tariff.summary, 'Добавить поле краткого описания')|escape}</div>
+							<ul class="home-tariff-features">
+								<li><b>{$tariff.channel_count|escape} {$wa->sm->skl($tariff.channel_count, 'канал', 'канала', 'каналов')}</b></li>
+								<li><b>{$tariff.channel_custom_count|escape} {$wa->sm->skl($tariff.channel_custom_count, 'собственный канал', 'собственных канала', 'собственных каналов')}</b> можно создать</li>
+								<li>Одновременный просмотр с <b>{$tariff.device_count|escape} {$wa->sm->skl($tariff.device_count, 'устройства', 'устройств', 'устройств')}</b></li>
+							</ul>
+							<div class="home-tariff-price"><span class="home-tariff-price-value">{wa_currency($tariff.price, '', '%2i')}</span> руб. / 30 дней</div>
+							<div class="home-tariff-more">
+								<div class="home-tariff-more-splitter"></div>
+								<a href="{$wa->getUrl('sm/frontend/tariff', ['tariff_url' => $tariff.url])}" data-url="{$tariff.url}">Подробнее</a>
+							</div>
+						</div>
+					</div>
+				{/foreach}
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.home-tariffs').slick({
+			infinite: true,
+				slidesToShow: 3,
+				slidesToScroll: 3,
+				adaptiveHeight: true,
+				responsive: [
+				{
+					breakpoint: 1151,
+					settings: {
+						slidesToShow: 3,
+						slidesToScroll: 3,
+					}
+				},
+				{
+					breakpoint: 768,
+					settings: {
+						slidesToShow: 2,
+						slidesToScroll: 2,
+					}
+				},
+				{
+					breakpoint: 576,
+					settings: {
+						slidesToShow: 1,
+						slidesToScroll: 1,
+					}
+				}
+			]
+		});
+	});
+</script>
+<div class="home-custom-wrapper">
+	<div class="container-fluid container">
+		<div class="row">
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 home-custom">
+				<div class="home-custom-inner">
+					<div class="home-custom-inner-texts">
+						<div class="home-custom-caption proxima">ИЛИ СОЗДАЙТЕ СВОЙ</div>
+						<div class="home-custom-text">Платите только за то, что нужно Вам</div>
+					</div>
+					<div class="home-custom-go">
+						<a href="{$wa->getUrl('sm/frontend/preview')}">Узнать больше</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="home-subscribe-wrapper">
+	<div class="container-fluid container">
+		<div class="row">
+			<div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-xs-12 home-subscribe-disclaimer">
+				БУДЬТЕ В КУРСЕ НОВОСТЕЙ СМОТРОН
+			</div>
+			<div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12 home-subscribe-input">
+				<div class="home-subscribe-field-wrap">
+					<input type="text" class="home-subscribe-field" placeholder="Ваш email">
+					<input type="button" class="home-subscribe-button icon send">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

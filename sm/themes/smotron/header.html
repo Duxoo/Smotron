@@ -1,0 +1,128 @@
+<div class="header">
+	<div class="container-fluid container">
+		<div class="row">
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				<div class="header-logo">
+					<a href="{$wa_url}"><img src="{$wa_theme_url}img/smotron.png"></a>
+				</div>
+				<div class="header-mobile-menu side-menu-deploy" data-menu="main">
+					<div class="header-mobile-menu-icon icon menu-white"></div>
+				</div>
+				<div class="header-menu-wrap">
+					<ul class="header-menu">
+						{foreach $wa->apps() as $mpage name=hmpages}
+							<li><a href="{$mpage.url|escape}">{$mpage.name|escape}</a></li>
+							{if !$smarty.foreach.hmpages.last}<li class="header-menu-splitter"></li>{/if}
+						{/foreach}
+					</ul>
+				</div>
+				{if $wa->user()->isAuth()}
+					<div class="header-user">
+						<div class="header-user-menu">
+							<div class="header-user-menu-overlay side-menu-deploy" data-menu="user"></div>
+							<div class="header-user-menu-data">
+								<img src="{$wa->user()->getPhoto()}" class="header-user-menu-avatar">
+								<span class="header-user-menu-name">{$wa->user()->get('firstname')|escape}</span>
+								<div class="header-user-menu-arrow icon arrow-down"></div>
+							</div>
+							<ul class="header-user-menu-inner">
+								<li><a href="{$wa->getUrl('sm/frontend')}my/stream/">Просмотр ТВ</a></li>
+								<li><a href="{$wa->getUrl('sm/frontend')}my/profile/">Профиль</a></li>
+								<li><a href="{$wa->getUrl('sm/frontend')}my/referral/">Реферальная программа</a></li>
+								<li><a href="{$wa->getUrl('sm/frontend')}my/balance/">Баланс</a></li>
+								<li><a href="{$wa->getUrl('sm/frontend')}my/custom_channels/">Мои каналы</a></li>
+								<li><a href="{$wa->getUrl('sm/frontend')}my/tariff/">Мой тариф</a></li>
+								<li><a href="{$wa->getUrl('sm/frontend')}my/access/">Доступ</a></li>
+								<li><noindex><a href="#" class="sm-logout">Выйти</a></noindex></li>
+							</ul>
+						</div>
+					</div>
+					<script type="text/javascript">
+						$(document).ready(function() {
+							$('.sm-logout').click(function() {
+								window.location.href='?logout';
+							});
+						});
+					</script>
+                {elseif $wa->sm->isSubuser()}
+					<div class="header-user">
+						<div class="header-user-menu">
+							<div class="header-user-menu-overlay side-menu-deploy" data-menu="user"></div>
+							<div class="header-user-menu-data">
+								<span class="header-user-menu-name">{$wa->sm->subuserGet('login')}</span>
+								<div class="header-user-menu-arrow icon arrow-down"></div>
+							</div>
+							<ul class="header-user-menu-inner">
+								<li><a href="{$wa->getUrl('sm/frontend')}stream/">Просмотр ТВ</a></li>
+								<li><noindex><a href="#" class="sm-u-logout">Выйти</a></noindex></li>
+							</ul>
+						</div>
+					</div>
+					<script type="text/javascript">
+                        $(document).ready(function() {
+                            $('.sm-u-logout').click(function() {
+                                window.location.href='/ULogout/';
+                            });
+                        });
+					</script>
+				{else}
+					<div class="header-login-mobile mobile-only">
+						<a href="#" class="sm-auth-trigger header-login-mobile-wrap">
+							<div class="header-login-mobile-icon icon auth-white"></div>
+							Вход
+						</a>
+					</div>
+					<div class="header-login non-mobile-only">
+						{if !isset($layout_no_top_registration_link)}
+							<a href="#" class="sm-auth-trigger">Войти</a> / <a href="#" class="sm-signup-trigger">Зарегистрироваться</a>
+						{else}
+							<a href="#" class="sm-auth-trigger">Войти на сайт</a>
+						{/if}
+					</div>
+				{/if}
+			</div>
+		</div>
+	</div>
+</div>
+<div class="side-menu-overlay"></div>
+<div class="side-menu" data-menu="main">
+	<div class="side-menu-content">
+		<div class="side-menu-upper">
+			<div class="side-menu-close">
+				<div class="side-menu-close-icon icon close-white"></div>
+			</div>
+		</div>
+		<ul class="side-menu-data">
+			{foreach $wa->apps() as $mpage}
+				<li><a href="{$mpage.url|escape}">{$mpage.name|escape}</a></li>
+			{/foreach}
+			<li><a href="/info/">Помощь</a></li>
+			<li><a href="{$wa->getUrl('helpdesk/frontend/home')}">Поддержка</a></li>
+		</ul>
+	</div>
+</div>
+<div class="side-menu" data-menu="user">
+	<div class="side-menu-content">
+		<div class="side-menu-upper">
+			<div class="side-menu-close">
+				<div class="side-menu-close-icon icon close-red"></div>
+			</div>
+		</div>
+		<ul class="side-menu-data">
+			<li><a href="{$wa->getUrl('sm/frontend')}my/profile/">Профиль</a></li>
+			<li><a href="{$wa->getUrl('sm/frontend')}my/balance/">Баланс</a></li>
+			<li><a href="{$wa->getUrl('sm/frontend')}my/channels/">Мои каналы</a></li>
+			<li><a href="{$wa->getUrl('sm/frontend')}my/tv_channels/">TV-каналы</a></li>
+			<li><a href="{$wa->getUrl('sm/frontend')}my/tariff/">Мой тариф</a></li>
+			<li><a href="{$wa->getUrl('sm/frontend')}my/access/">Доступ</a></li>
+			<li><noindex><a href="#" class="sm-logout">Выйти</a></noindex></li>
+		</ul>
+	</div>
+</div>
+{if waRequest::get('ar', 0, 'int') == 1}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('.sm-auth-trigger').trigger('click');
+		});
+	</script>
+{/if}

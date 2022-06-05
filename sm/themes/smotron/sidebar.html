@@ -1,0 +1,15 @@
+<div class="sidebar-block">
+	<div class="sidebar-block-caption">Информация</div>
+	<div class="sidebar-block-content">
+		{$pages = $wa->site->pages()}
+		{$selected = ifempty($page.id, 0)}
+		{wa_print_tree tree=$pages elem='<a href=":url"><i class="sidebar-tree-list-icon icon next-light"></i>:name</a>' class="sidebar-tree-list" unfolded=false selected=$selected}
+	</div>
+</div>
+<div class="h15"></div>
+<div class="sidebar-block">
+	<div class="sidebar-block-caption">Мы на связи</div>
+	<div class="sidebar-block-content">
+		<a href="{$wa->getUrl('helpdesk/frontend')}" class="sm-button-white">Поддержка</a>
+	</div>
+</div>

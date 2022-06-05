@@ -1,0 +1,43 @@
+<div class="content">
+    <div class="container-fluid container data-main-content">
+        <div class="row">
+            <div class="col data-content">
+                <div class="row sm-breadcrumbs">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+                        »
+                    </div>
+                </div>
+                <h1>Тариф: {$tariff.name|escape}</h1>
+                <div>По тарифу доступно:</div>
+                <ul>
+                    <li><b>{$tariff.channel_count|escape} {$wa->sm->skl($tariff.channel_count, 'канал', 'канала', 'каналов')}</b></li>
+                    <li><b>{count($tariff.channels)|escape} {$wa->sm->skl(count($tariff.channels), 'канал', 'канала', 'каналов')}</b> можно создать</li>
+                    <li>Одновременный просмотр с <b>{$tariff.device_count|escape} {$wa->sm->skl($tariff.device_count, 'устройства', 'устройств', 'устройств')}</b></li>
+                </ul>
+                <div>ТВ каналы доступные доступные по этому тарифу</div>
+                <div class="channel-list-channels row">
+                    {foreach $channels as $channel}
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-6 home-channel" data-channel="{$channel.id}" data-name="{$channel.name|escape}">
+                            <div class="home-channel-image" style="background: url('{$channel.image|escape}')"></div>
+                            <div class="home-channel-name">{$channel.name|escape}</div>
+                        </div>
+                    {/foreach}
+                </div>
+                <div>Описание:</div>
+                <div>{ifempty($tariff.description, 'Добавить поле описания')}</div>
+                <div>Стоимость:</div>
+                <div>
+                    <span class="home-tariff-price-value">{wa_currency($tariff.price, '', '%2i')}</span> руб. / 30 дней
+                </div>
+                <a class="sm-button-white" href="/checkout/?tariff_id={$tariff_id}">Купить</a>
+            </div>
+            <div class="col sidebar">
+                {include file="`$wa_active_theme_path`/sidebar.html" inline}
+            </div>
+        </div>
+    </div>
+</div>

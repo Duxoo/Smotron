@@ -1,0 +1,389 @@
+<script>
+    function isCheck(id = null, ){
+        action = "?module=clients&action=premoderationToggle&id="+id;
+        $.post(action, '1=1', function(jData) {
+            if(jData.data.result == '1') {
+                $("#user_channel").dataTable().fnDestroy();
+                var user_id = {$id};
+                $('#user_channel').dataTable( {
+                    "processing": true,
+                    "serverSide": true,
+                    "lengthMenu": [[25, 50], [25, 50]],
+                    "ajax": "?module=clients&action=ChannelsList&id=" + user_id,
+                    "order": [[ 0, "asc" ]],
+                    "language":{
+                        "sLengthMenu": "Показывать _MENU_ записей",
+                        "sZeroRecords": "Нет записей, удовлетворяющих условиям поиска",
+                        "sInfo": "Отображаются записи с _START_ до _END_ из _TOTAL_",
+                        "sInfoEmpty": "Отображаются записи с 0 до 0 из 0",
+                        "sInfoFiltered": "(отфильтровано из _MAX_ записей)",
+                        "sSearch": "Поиск:",
+                        "processing": "Обработка...",
+                        "oPaginate": { "sNext": ">>", "sPrevious": "<<" }
+                    }
+                });
+            }
+            else {
+                alert(jData.data.message);
+            }
+        }, 'json');
+        return false;
+    }
+</script>
+<h1 class="sm-tab-caption sm-block">
+    <span>{if $id}{$data.name|escape}{/if}</span>
+    <a href="?module=clients"  class="sm-caption-back-url mr15">Все клиенты</a>
+</h1>
+<div class="h15"></div>
+<form id="premoderation-form" method="post" action="?module=clients&action=premoderationActivate">
+    <input type="hidden" name="id" value="{if isset($id)}{$id|escape}{/if}">
+    <div class="field">
+        <div class="name">Режим премодерации</div>
+        <div class="value onoffswitch">
+            <input type="checkbox" name="premoderation" class="onoffswitch-checkbox" id="myonoffswitch" tabindex="0" {if isset($data.premoderation)}{if $data.premoderation == 'on'}checked{/if}{/if}>
+            <label class="onoffswitch-label" for="myonoffswitch"></label>
+        </div>
+    </div>
+</form>
+<ul class="sm-upper-tabs data-menu mt10">
+    <li class="selected" data-tab="profile">
+        <a href="#profile">Данные профиля клиента</a>
+    </li>
+    <li data-tab="company">
+        <a href="#company">Данные счета клиента</a>
+    </li>
+    <li data-tab="channel">
+        <a href="#channel">Собственные каналы клиента</a>
+    </li>
+    {if isset($tariff)}
+        <li data-tab="tariff">
+            <a href="#tariff">Нестандартный тариф клиента</a>
+        </li>
+    {/if}
+</ul>
+<div class="sm-clients-content mt10">
+    <div class="sm-tab-content" data-tab="profile">
+        <input type="hidden" name="id" value="{if isset($id)}{$id|escape}{/if}">
+        <form id="client-form" class="sm-form mt10 client-form" method="post" action="?module=clients&action=editSave">
+            <input type="hidden" name="id" value="{if isset($id)}{$id|escape}{/if}">
+            <div class="field">
+                <div class="name">Имя учетной записи</div>
+                <div class="value">
+                    <input type="text" class="form-control" id="sm_profile_name" name="profile[name]" value="{$data.firstname}">
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">Email адрес</div>
+                <div class="value">
+                    <input type="text" class="form-control" id="sm_profile_email" name="profile[email]" value="{$data.email['0'].value}">
+                </div>
+            </div>
+            <div class="h15"></div>
+            <div class="field">
+                <input type="submit" class="sm-button" value="Сохранить">
+                <span class="form-message"></span>
+            </div>
+        </form>
+    </div>
+    <div class="sm-tab-content" data-tab="company" style="display: none">
+        <form id="client-form" class="sm-form mt10 client-form" method="post" action="?module=clients&action=editCompanySave">
+            <input type="hidden" name="id" value="{if isset($id)}{$id|escape}{/if}">
+            {foreach $jfields as $key => $field}
+            <div class="field">
+                <div class="name">{$field.name|escape}</div>
+                <div class="value">
+                    <input type="text" class="form-control {if !empty($field.class)}{$field.class|escape}{/if}" id="sm_profile_name" name="company[{$key}]" value="{$field.value|escape}">
+                </div>
+            </div>
+            {/foreach}
+            <div class="field">
+                <input type="submit" class="sm-button" value="Сохранить">
+                <span class="form-message"></span>
+            </div>
+        </form>
+    </div>
+    <div class="sm-tab-content" data-tab="channel" style="display: none">
+        <table id="user_channel" class="sm-table">
+            <thead>
+            <tr>
+                <th class="th30">Подтверждение</th>
+                <th>Имя канала</th>
+                <th>Статус</th>
+                <th style="width: 100px"></th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    {if isset($tariff)}
+        <div class="sm-tab-content" data-tab="tariff" style="display: none">
+            <h1 class="sm-tab-caption sm-block">
+                <span>{$tariff.name|escape}</span>
+            </h1>
+            <form id="tariff-form" class="sm-form mt10 tariff-form" method="post" action="?module=tariff&action=save">
+                <input type="hidden" name="tariff[id]" value="{if isset($tariff.id)}{$tariff.id|escape}{/if}">
+                <div class="field">
+                    <div class="name">Название</div>
+                    <div class="value">
+                        <input disabled id="tariff_name" type="text" name="tariff[name]" required value="{if isset($data.name)}{$tariff.name|escape}{/if}">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">URL адрес</div>
+                    <div class="value">
+                        <input disabled id="tariff_url" type="text" name="tariff[url]" required value="{if isset($tariff.url)}{$tariff.url|escape}{/if}">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">Количество потоков</div>
+                    <div class="value">
+                        <input disabled id="tariff_range" type="range" name="tariff[device_count]" min="1" max="20" step="1" value="{if isset($tariff.device_count)}{$tariff.device_count|escape}{/if}">
+                        <p class="d-inline-block">: <span id="tariff_label"></span></p>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">Количество своих каналов</div>
+                    <div class="value">
+                        <input disabled id="tariff_custom_range" type="range" name="tariff[channel_custom_count]" min="0" max="20" step="1" value="{if isset($tariff.channel_custom_count)}{$tariff.channel_custom_count|escape}{/if}">
+                        <p class="d-inline-block">: <span id="tariff_clabel"></span></p>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">Каналы входящие в тариф</div>
+                    <div class="value">
+                        {*<select multiple id="tariff_channels" type="text" name="tariff[channels][]" required>
+                            {foreach $channels as $key => $channel}
+                                <option value="{$channel.id}" {if isset($data.channels[$channel.id])}selected{/if}>{$channel.name}</option>
+                            {/foreach}
+                        </select>*}
+                        <input id="search" type="text" name="search" placeholder="Поиск...">
+                        {*<label class="check-all"><input type="checkbox"><span>Выбрать все</span></label>*}
+                        <button type="button" class="check-all" data-class="sm-active-checkbox">Выбрать все</button>
+                        <div class="sm-checkbox-list">
+                            {foreach $channels as $key => $channel}
+                                <label class="checkbox-label sm-active-checkbox" data-name="{$channel.name}">
+                                    <input disabled type="checkbox" name="tariff[channels][]" value="{$channel.id}"  {if isset($channel.checked) && ($channel.checked == true)}checked{/if}>
+                                    <span class="button {if isset($channel.checked) && ($channel.checked == true)}green{else}gray{/if}">{$channel.name|escape}</span>
+                                </label>
+                            {/foreach}
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">Месячная стоимость</div>
+                    <div class="value">
+                        <input disabled id="tariff_price" type="text" name="tariff[price]" required value="{if isset($tariff.price)}{$tariff.price|escape}{/if}">
+                    </div>
+                </div>
+                {*<div class="field">
+                    <div class="name">Краткое описание</div>
+                    <div class="value">
+          <textarea disabled id="description" name="tariff[description]" rows="20" form="tariff-form" placeholder ="{if isset($tariff.description)}{$tariff.description|escape}{/if}">
+            {if isset($tariff.description)}{$tariff.description|escape}{/if}
+          </textarea>
+                    </div>
+                </div>*}
+                {*<div class="field">
+                    <div class="name">Опубликован</div>
+                    <div class="value">
+                        <input id="tariff_disabled" type="checkbox" name="tariff[disabled]" {if $data.disabled == 1}value="0"{else}checked value="1"{/if}>
+                    </div>
+                </div>*}
+                <div class="field">
+                    {*<input type="submit" class="sm-button" value="Сохранить">*}
+                    <span class="form-message"></span>
+                </div>
+            </form>
+        </div>
+        {debug}
+    {/if}
+</div>
+<script>
+    $(document).ready(function() {
+        var id = {$id};
+        var user_channels = $('#user_channel').dataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [[25, 50], [25, 50]],
+            "ajax": "?module=clients&action=ChannelsList&id=" + id,
+            "order": [[0, "desc"]],
+            "language": {
+                "sLengthMenu": "Показывать _MENU_ записей",
+                "sZeroRecords": "Нет записей, удовлетворяющих условиям поиска",
+                "sInfo": "Отображаются записи с _START_ до _END_ из _TOTAL_",
+                "sInfoEmpty": "Отображаются записи с 0 до 0 из 0",
+                "sInfoFiltered": "(отфильтровано из _MAX_ записей)",
+                "sSearch": "Поиск:",
+                "processing": "Обработка...",
+                "oPaginate": { "sNext": ">>", "sPrevious": "<<" }
+            }
+        });
+
+        $('#premoderation-form').submit(function() {
+            var form = $(this);
+            var remote_location = form.attr('action');
+            var message_field = form.find('.form-message');
+            var submit_button = form.find('input[type="submit"]');
+            var preloader = form.find('.form-preloader');
+            submit_button.removeClass('green').removeClass('yellow').addClass('gray').attr('disabled', true);
+            preloader.show();
+            message_field.hide();
+            var serialize_data = form.serialize();
+            $('.onoffswitch-checkbox').each(function() {
+                if (!$(this).prop('checked')) {
+                    serialize_data += '&'+this.name+'=off';
+                }
+            });
+            $.post(remote_location, serialize_data, function(jData) {
+                preloader.hide();
+                message_field.show();
+                form.find('.field-error').hide();
+                submit_button.removeClass('gray').addClass('green').removeAttr('disabled');
+                if(jData.data.message) {
+                    message_field.html(jData.data.message);
+                }
+                if(jData.data.result == '1') {
+                    message_field.css('color', 'green');
+                }
+                else {
+                    message_field.css('color', 'red');
+                    if(jData.data.fields) {
+                        $.each(jData.data.fields, function(index, value) {
+                            console.log(index);
+                            if(value.length) {
+                                form.find('.field-error[data-field="'+index+'"]').html(value);
+                            }
+                            form.find('.field-error[data-field="'+index+'"]').show();
+                        });
+                    }
+                }
+                if(callback) {
+                    callback(jData);
+                }
+            }, 'json');
+            return false;
+        });
+
+        $('.onoffswitch-checkbox').on('change',function(){
+            $('#premoderation-form').trigger('submit');
+        });
+
+        function translit(str) {
+            str = str.toLowerCase().replace(/<.+>/, ' ').replace(/\s+/, ' ');
+            var c = {
+                'а':'a', 'б':'b', 'в':'v', 'г':'g', 'д':'d',
+                'е':'e', 'ё':'jo', 'ж':'zh', 'з':'z', 'и':'i',
+                'й':'j', 'к':'k', 'л':'l', 'м':'m', 'н':'n',
+                'о':'o', 'п':'p', 'р':'r', 'с':'s', 'т':'t',
+                'у':'u', 'ф':'f', 'х':'h', 'ц':'c', 'ч':'ch',
+                'ш':'sh', 'щ':'shch', 'ъ':'', 'ы':'y', 'ь':'',
+                'э':'e', 'ю':'ju', 'я':'ja', ' ':'_', ';':'',
+                ':':'', ',':'', '—':'_', '–':'_', '.':'',
+                '«':'', '»':'', '"':'', "'":'', '@':'','+':'plus'
+            };
+            var newStr = new String();
+            for (var i = 0; i < str.length; i++) {
+                ch = str.charAt(i);
+                newStr += ch in c ? c[ch] : ch;
+            }
+            return newStr;
+        };
+        $('#tariff_name').keyup(function () {
+            let str = $(this).val();
+            $('#tariff_url').val(translit(str));
+        });
+
+        function checkElements(e) {
+            let chebox = e.parent().find('input');
+            if(e.hasClass('green')){
+                e.removeClass('green');
+                e.addClass('gray');
+                chebox.removeAttr('checked');
+            }else {
+                e.removeClass('gray');
+                e.addClass('green');
+            }
+        };
+
+        $("#search").keyup(function(){
+            _this = this;
+
+            $.each($(".sm-checkbox-list .checkbox-label"), function() {
+                if($(this).data('name').toLowerCase().indexOf($(_this).val().toLowerCase()) === -1) {
+                    $(this).removeClass('sm-active-checkbox');
+                    $(this).addClass('sm-hide-checkbox');
+                } else {
+                    $(this).addClass('sm-active-checkbox');
+                    $(this).removeClass('sm-hide-checkbox');
+                }
+            });
+        });
+
+        $('.check-all').on('click',function () {
+            $(".sm-checkbox-list .checkbox-label.sm-active-checkbox").each(function() {
+                checkElements($(this).find('span.button'));
+            });
+        });
+
+        /*$('span.button').on('click',function() {
+            checkElements($(this));
+        });
+*/
+
+
+        var slider = document.getElementById("tariff_range");
+        var output = document.getElementById("tariff_label");
+        output.innerHTML = slider.value;
+        slider.oninput = function() {
+            output.innerHTML = this.value;
+        };
+        var cslider = document.getElementById("tariff_custom_range");
+        var coutput = document.getElementById("tariff_clabel");
+        coutput.innerHTML = cslider.value;
+        cslider.oninput = function() {
+            coutput.innerHTML = this.value;
+        };
+
+        $(function(){
+            $('#description').redactor();
+        });
+        $('.tariff-form').submit(function () {
+            var form = $(this);
+            var formData = new FormData($(this)[0]), action = $(this).attr('action');
+            $.ajax({
+                contentType: false, // важно - убираем форматирование данных по умолчанию
+                processData: false, // важно - убираем преобразование строк по умолчанию
+                data: formData,
+                dataType: "json",
+                type: "post",
+                url : action,
+                success: function(jData){
+                    var message_field = form.find('.form-message');
+                    if(jData.data.message) {
+                        message_field.html(jData.data.message);
+                    }
+                    if(jData.data.result == '1') {
+                        message_field.css('color', 'green');
+                    }
+                    else {
+                        message_field.css('color', 'red');
+                        if(jData.data.fields) {
+                            $.each(jData.data.fields, function(index, value) {
+                                console.log(index);
+                                if(value.length) {
+                                    form.find('.field-error[data-field="'+index+'"]').html(value);
+                                }
+                                form.find('.field-error[data-field="'+index+'"]').show();
+                            });
+                        }
+                    }
+                    if(jData.data.result == '1') {
+                        if(jData.data.new == '1') {
+                            window.location.href='?module=tariff&id='+jData.data.id;
+                        }
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>

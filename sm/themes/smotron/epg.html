@@ -1,0 +1,20 @@
+<div class="sm-epg-tittle mb15">
+    <div class="sm-epg-caption">
+        <div class="sm-epg-heading">Телепрограмма канала:</div>
+        <div class="sm-epg-date-tittle">сегодня</div>
+    </div>
+</div>
+
+{if isset($epg)}
+    <div id="epg" class="row nopadding mt15">
+        {foreach $epg as $key => $value}
+            <div id="epg-item" class="col-12">
+                {if isset($value.start)}<div class="sm-epg-time">{$value.start|escape}</div>{/if}
+                {if isset($value.name)}<div class="sm-epg-name">{$value.name|escape}</div>{/if}
+                {if isset($value.about)}<div class="sm-epg-summury">{$value.about|escape}</div>{/if}
+            </div>
+        {/foreach}
+    </div>
+{else}
+    <div>Для данного канала нет программы</div>
+{/if}

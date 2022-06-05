@@ -1,0 +1,463 @@
+<h1 class="sm-tab-caption sm-block"><span>Настройки</span></h1>
+<ul class="sm-upper-tabs data-menu mt10">
+    <li class="selected" data-tab="common">
+        <a href="#common">Основные настройки</a>
+    </li>
+    <li data-tab="seo">
+        <a href="#seo">SEO настройки</a>
+    </li>
+    <li data-tab="channels">
+        <a href="#channels">Настройки каналов</a>
+    </li>
+    <li data-tab="tariffs">
+        <a href="#tariffs">Констркутор тарифов</a>
+    </li>
+	<li data-tab="payment">
+		<a href="#payment">Оплата</a>
+	</li>
+	<li data-tab="bill">
+		<a href="#bill">Выставление счета</a>
+	</li>
+    <li data-tab="flussonic">
+        <a href="#flussonic">Flussonic</a>
+    </li>
+</ul>
+<div class="sm-settings-content mt10">
+    <div class="sm-tab-content" data-tab="common">
+        <h2 class="sm-tab-caption sm-block"><span>Основные настройки</span></h2>
+        <form id="settings-form" class="sm-form mt10 settings-form" action="?module=settings&action=save">
+            <div class="field">
+                <div class="name">Основной e-mail</div>
+                <div class="value">
+                    <input id="e_mail" type="text" name="settings[e_mail]"  value="{if isset($settings.e_mail)}{$settings.e_mail|escape}{/if}">
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">Основной телефон</div>
+                <div class="value">
+                    <input id="phone" type="text" name="settings[phone]"  value="{if isset($settings.phone)}{$settings.phone|escape}{/if}">
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">Основной адрес</div>
+                <div class="value">
+                    <input id="address" type="text" name="settings[address]"  value="{if isset($settings.address)}{$settings.address|escape}{/if}">
+                </div>
+            </div>
+            {*<div class="field">
+                <div class="name">Канал на главной странице</div>
+                <div class="value">
+                    <input id="address" type="text" name="settings[main_channel]"  value="{if isset($settings.main_channel)}{$settings.main_channel|escape}{/if}">
+                </div>
+            </div>*}
+            <div class="field">
+                <input type="submit" class="sm-button" value="Сохранить">
+                <span class="form-message"></span>
+            </div>
+        </form>
+        <div style="margin-top:10px">
+            <h2 class="sm-tab-caption sm-block"><span>Настройки собственых тарифов</span></h2>
+            <form id="custom-tariff-params-form" class="sm-form mt10 tariff-form" method="post" action="?module=settings&action=save">
+                <div class="field">
+                    <div class="name">Цена за 1 собственный канал</div>
+                    <div class="value">
+                        <input id="channel_price" type="text" name="settings[ctariff_channel_price]" required value="{if isset($settings.ctariff_channel_price)}{$settings.ctariff_channel_price|escape}{/if}">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">Цена за 1 поток</div>
+                    <div class="value">
+                        <input id="channel_price" type="text" name="settings[ctariff_stream_price]" required value="{if isset($settings.ctariff_stream_price)}{$settings.ctariff_stream_price|escape}{/if}">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">Минимальная цена собственного тарифа.</div>
+                    <div class="value">
+                        <input id="channel_price" type="text" name="settings[ctariff_min_price]" required value="{if isset($settings.ctariff_min_price)}{$settings.ctariff_min_price|escape}{/if}">
+                    </div>
+                </div>
+                <div class="field">
+                    <input type="submit" class="sm-button" value="Сохранить">
+                    <span class="form-message"></span>
+                </div>
+            </form>
+        </div>
+        <div style="margin-top:10px">
+            <h2 class="sm-tab-caption sm-block"><span>Настройка скидок и реферальной программы</span></h2>
+            <form id="discount-params-form" class="sm-form mt10 tariff-form" method="post" action="?module=settings&action=discountSave">
+                <div class="field">
+                    <div class="name">% скидки за покупку тарифа на 90 дней</div>
+                    <div class="value">
+                        <input id="channel_price" type="text" name="discount[90day]" required value="{if isset($settings['90day'])}{$settings['90day']|escape}{/if}">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">% скидки за покупку тарифа на 180 дней</div>
+                    <div class="value">
+                        <input id="channel_price" type="text" name="discount[180day]" required value="{if isset($settings['180day'])}{$settings['180day']|escape}{/if}">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">% за 1 уровень реферальной программы</div>
+                    <div class="value">
+                        <input id="channel_price" type="text" name="referral[1discount]" required value="{if isset($settings['1discount'])}{$settings['1discount']|escape}{/if}">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">% за 2 уровень реферальной программы</div>
+                    <div class="value">
+                        <input id="channel_price" type="text" name="referral[2discount]" required value="{if isset($settings['2discount'])}{$settings['2discount']|escape}{/if}">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">% за 3+ уровень реферальной программы</div>
+                    <div class="value">
+                        <input id="channel_price" type="text" name="referral[3discount]" required value="{if isset($settings['3discount'])}{$settings['3discount']|escape}{/if}">
+                    </div>
+                </div>
+                <div class="field">
+                    <input type="submit" class="sm-button" value="Сохранить">
+                    <span class="form-message"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="sm-tab-content" data-tab="seo" style = "display: none;">
+        <h2 class="sm-tab-caption sm-block"><span>SEO настройки</span>{*<a href="?module=settings&action=seoSave" class="float-right"><i class="ps-icon add"></i></a>*}</h2>
+        <form class="seo-settings" class="sm-form mt10" action="?module=settings&action=save" style="margin-top: 10px">
+            <div class="field">
+                <div class="name">Title главной страницы</div>
+                <div class="value"><input type="text" name="settings[home_title]" value="{if isset($settings.home_title)}{$settings.home_title|escape}{/if}"></div>
+            </div>
+            <div class="field">
+                <div class="name">Keywords главной страницы</div>
+                <div class="value"><textarea name="settings[home_keywords]">{if isset($settings.home_keywords)}{$settings.home_keywords|escape}{/if}</textarea></div>
+            </div>
+            <div class="field">
+                <div class="name">Description главной страницы</div>
+                <div class="value"><textarea name="settings[home_description]">{if isset($settings.home_description)}{$settings.home_description|escape}{/if}</textarea></div>
+            </div>
+            <div class="field">
+                <div class="name">Title страницы тарифа</div>
+                <div class="value">
+                    <input type="text" name="settings[tariff_title]" value="{if isset($settings.tariff_title)}{$settings.tariff_title|escape}{/if}"><br>
+                    <span class="hint">Используйте плейсхолдер %tariff_name% для указания имени тарифа здесь и далее</span>
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">Keywords страницы тарифа</div>
+                <div class="value"><textarea name="settings[tariff_keywords]">{if isset($settings.tariff_keywords)}{$settings.tariff_keywords|escape}{/if}</textarea></div>
+            </div>
+            <div class="field">
+                <div class="name">Description страницы тарифа</div>
+                <div class="value"><textarea name="settings[tariff_description]">{if isset($settings.tariff_description)}{$settings.tariff_description|escape}{/if}</textarea></div>
+            </div>
+            {*<div class="field">
+                <div class="name">Title поста</div>
+                <div class="value">
+                    <input type="text" name="seo[post_title]" value="{if isset($settings.post_title)}{$settings.post_title|escape}{/if}"><br>
+                    <span class="hint">Используйте плейсхолдер %post_name% для указания имени поста здесь и далее</span>
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">Keywords поста</div>
+                <div class="value"><textarea name="seo[post_keywords]">{if isset($settings.post_keywords)}{$settings.post_keywords|escape}{/if}</textarea></div>
+            </div>
+            <div class="field">
+                <div class="name">Description поста</div>
+                <div class="value"><textarea name="seo[post_description]">{if isset($settings.post_description)}{$settings.post_description|escape}{/if}</textarea></div>
+            </div>*}
+            <div class="field">
+                <input type="submit" value="Сохранить" class="button green">
+                <span class="form-message"></span>
+            </div>
+        </form>
+    </div>
+    <div class="sm-tab-content" data-tab="channels" style = "display: none;">
+        <h2 class="sm-tab-caption sm-block"><span>Каналы</span><span data-action="?module=channel&action=reload" class="float-right" id="channel-reload"><i class="sm-icon download"></i></span></h2>
+        <table id="dt_channels" class="sm-table">
+            <thead>
+                <tr>
+                    <th class="th30">ID</th>
+                    <th>Изображение</th>
+                    <th>Название</th>
+                    <th>Стоимость</th>
+                    <th>Трансляция</th>
+                    <th>fl_code</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="sm-tab-content" data-tab="tariffs" style = "display: none;">
+        <h2 class="sm-tab-caption sm-block"><span>Тарифы</span><a href="?module=tariff" class="float-right"><i class="sm-icon add"></i></a></h2>
+        <table id="t_tariff" class="sm-table">
+            <thead>
+            <tr>
+                <th class="th30">sort</th>
+                <th class="th30"></th>
+                <th class="th30">ID</th>
+                <th>name</th>
+                <th>TV каналы</th>
+                <th>Свои каналы</th>
+                <th>Кол-во устройств</th>
+                <th>Стоимость</th>
+            </tr>
+            </thead>
+            <tbody id="listWithHandle" class="tariff-list"></tbody>
+        </table>
+	</div>
+	<div class="sm-tab-content" data-tab="payment" style="display: none;">
+		<h2 class="sm-tab-caption sm-block"><span>Настройка методов оплаты</span></h2>
+	</div>
+	<div class="sm-tab-content" data-tab="bill" style="display: none;">
+		<h2 class="sm-tab-caption sm-block"><span>Выставление счета</span></h2>
+		<form class="sm-form mt10 bill-settings-form" action="?module=settings&action=save">
+			<div class="field">
+                <div class="name">Токен Dadata</div>
+                <div class="value">
+                    <input type="text" name="settings[bill_dadata_token]" value="{ifempty($settings.bill_dadata_token, '')|escape}">
+					<br>
+					<span class="hint">Ключ сервиса Dadata для подсказок пользователям</span>
+                </div>
+            </div>
+			{foreach $bill_fields as $key => $field}
+				<div class="field">
+					<div class="name">{$field.name|escape}</div>
+					<div class="value">
+						{$bill_field_name = 'bill_'|cat:$key}
+						<input type="text" name="settings[bill_{$key}]" value="{ifempty($settings.$bill_field_name, '')|escape}">
+					</div>
+				</div>
+			{/foreach}
+			<div class="field">
+                <div class="name">Генеральный директор</div>
+                <div class="value">
+                    <input type="text" name="settings[bill_director]" value="{ifempty($settings.bill_director, '')|escape}">
+                </div>
+            </div>
+			<div class="field">
+                <div class="name">Главный бухгалтер</div>
+                <div class="value">
+                    <input type="text" name="settings[bill_buh]" value="{ifempty($settings.bill_buh, '')|escape}">
+                </div>
+            </div>
+			<div class="field">
+				<input type="submit" class="sm-button" value="Сохранить">
+				<span class="form-message"></span>
+			</div>
+		</form>
+		<div class="h15"></div>
+		<h2 class="sm-tab-caption sm-block"><span>Факсимиле</span></h2>
+		<form class="sm-form mt10 bill-faximile-form">
+			<div class="field">
+				<img class="bill_faximile_image" src="?module=settings&action=getFaximile">
+			</div>
+			<div class="field">
+				<div class="name">Печать с подписью</div>
+				<div class="value">
+					<input type="file" name="bill_faximile" class="settings-bill-faximile" value="">
+				</div>
+			</div>
+			<div class="field">
+				<input type="submit" class="sm-button" value="Загрузить">
+				<span class="form-message"></span>
+			</div>
+		</form>
+	</div>
+    {*<div class="sm-tab-content" data-tab="flussonic" style="display: none;">
+        <h2 class="sm-tab-caption sm-block"><span>Основные данные для работы с медиа-сервером Flussonic</span></h2>
+    </div>*}
+    <div class="sm-tab-content" data-tab="flussonic" style="display: none;">
+        <h2 class="sm-tab-caption sm-block"><span>Основные данные для работы с медиа-сервером Flussonic</span></h2>
+        <form class="sm-form mt10 bill-settings-form" action="?module=settings&action=save">
+            <div class="field">
+                <div class="name">URL сервера</div>
+                <div class="value">
+                    <input type="text" name="settings[flussonic_url]" value="{ifempty($settings.flussonic_url, '')|escape}">
+                    <br>
+                    <span class="hint">К примеру, https://stream.smotron.tv/, обратите вниманание на слеш на конце. Если поставить неправильные данные, то работа с сервером прекратится!</span>
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">Логин администратора</div>
+                <div class="value">
+                    <input type="text" name="settings[flussonic_login]" value="{ifempty($settings.flussonic_login, '')|escape}">
+                    <br>
+                    <span class="hint">По умолчанию логин flussonic</span>
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">Пароль администратора</div>
+                <div class="value">
+                    <input type="text" name="settings[flussonic_password]" value="{ifempty($settings.flussonic_password, '')|escape}">
+                    <br>
+                    <span class="hint">По умолчанию пароль letmein!</span>
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">Токен fl</div>
+                <div class="value">
+                    <input type="text" name="settings[flussonic_token]"  value="{ifempty($settings.flussonic_token, '')|escape}">
+                </div>
+            </div>
+            <div class="field">
+                <input type="submit" class="sm-button" value="Сохранить">
+                <span class="form-message"></span>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#settings-form').submit(function() {
+            var form = $(this);
+            var remote_location = form.attr('action');
+            var message_field = form.find('.form-message');
+            var submit_button = form.find('input[type="submit"]');
+            var preloader = form.find('.form-preloader');
+            submit_button.removeClass('green').removeClass('yellow').addClass('gray').attr('disabled', true);
+            preloader.show();
+            message_field.hide();
+            var serialize_data = form.serialize();
+            $('.onoffswitch-checkbox').each(function() {
+                if (!$(this).prop('checked')) {
+                    serialize_data += '&'+this.name+'=off';
+                }
+            });
+            $.post(remote_location, serialize_data, function(jData) {
+                preloader.hide();
+                message_field.show();
+                form.find('.field-error').hide();
+                submit_button.removeClass('gray').addClass('green').removeAttr('disabled');
+                if(jData.data.message) {
+                    message_field.html(jData.data.message);
+                }
+                if(jData.data.result == '1') {
+                    message_field.css('color', 'green');
+                }
+                else {
+                    message_field.css('color', 'red');
+                    if(jData.data.fields) {
+                        $.each(jData.data.fields, function(index, value) {
+                            console.log(index);
+                            if(value.length) {
+                                form.find('.field-error[data-field="'+index+'"]').html(value);
+                            }
+                            form.find('.field-error[data-field="'+index+'"]').show();
+                        });
+                    }
+                }
+                if(callback) {
+                    callback(jData);
+                }
+            }, 'json');
+            return false;
+        });
+
+        $('.bill-settings-form').fSend(function() {
+		});
+
+        $('.seo-settings').fSend(function() {
+        });
+
+        $('#custom-tariff-params-form').fSend(function() {
+        });
+
+        $('#discount-params-form').fSend(function() {
+        });
+
+		$('.bill-faximile-form').submit(function() {
+			var file_data = $('.settings-bill-faximile').prop('files')[0];
+			var form_data = new FormData();
+			form_data.append('file', file_data);
+			$.ajax({
+				url: '?module=settings&action=saveFaximile',
+				dataType: 'json',
+				cache: false,
+				contentType: false,
+				processData: false,
+				data: form_data,
+				type: 'post',
+				success: function(jData) {
+					if(jData.data.result == '1') {
+						var d = new Date();
+						$('.bill_faximile_image').attr('src', jData.data.url+'&d='+d.getTime());
+					}
+					else {
+						alert(jData.data.message);
+					}
+				}
+			});
+			return false;
+		});
+
+		//var tariff_list = $.post('?module=tariff&action=List');
+        $('.tariff-list').load('?module=tariff&action=List');
+
+        //var el = document.getElementById('listWithHandle');
+
+        var sortable = Sortable.create(listWithHandle, {
+            handle: '.sm-icon.sort',
+            sort:'true' ,
+            animation: 150,
+            onChange: function(evt) {
+                let itemCollection = sortable.el.children;
+                let data = [];
+                for(const el of itemCollection) {
+                    var index = Array.prototype.indexOf.call(el.parentElement.children, el);
+                    data[index] = Number(el.getAttribute('id'));
+                };
+                $.post('?module=tariff&action=move',{ "data":data });
+            }
+        });
+
+        var dt_channels = $('#dt_channels').dataTable( {
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [[25, 50], [25, 50]],
+            "ajax": "?module=channel&action=list",
+            "order": [[ 0, "asc" ]],
+            "language":{
+                "sLengthMenu": "Показывать _MENU_ записей",
+                "sZeroRecords": "Нет записей, удовлетворяющих условиям поиска",
+                "sInfo": "Отображаются записи с _START_ до _END_ из _TOTAL_",
+                "sInfoEmpty": "Отображаются записи с 0 до 0 из 0",
+                "sInfoFiltered": "(отфильтровано из _MAX_ записей)",
+                "sSearch": "Поиск:",
+                "processing": "Обработка...",
+                "oPaginate": { "sNext": ">>", "sPrevious": "<<" }
+            }
+        });
+
+        $('#channel-reload').on('click',function(){
+            if(confirm('Синхронизировать список каналов?')) {
+                $.post($(this).data('action'), '', function(jData) {
+                    if(jData.data.result == '1') {
+                        window.location.href = '?module=settings#channels';
+                    }
+                    else {
+                        alert(jData.data.message);
+                    }
+                }, 'json');
+            }
+            return false;
+        });
+
+		$('.sm-upper-tabs li').click(function() {
+			if($(this).attr('data-tab') == 'payment') {
+				$('.sm-tab-content[data-tab="'+$(this).attr('data-tab')+'"]').html('<i class="icon16 loading"></i>').load('?module=settings&action=payment');
+			}
+		});
+
+        // HASH LOAD
+        $('.sm-upper-tabs li').click(function() {
+            location.hash = '#'+$(this).attr('data-tab');
+        });
+
+        var hash = window.location.hash.replace('#', '');
+        if($('.sm-upper-tabs li[data-tab="'+hash+'"]').length) {
+            $('.sm-upper-tabs li[data-tab="'+hash+'"]').trigger('click');
+        }
+    });
+</script>

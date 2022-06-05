@@ -1,0 +1,13 @@
+<div id="sidebar">
+    <div class="sidebar-header">
+        <span>Информация</span>
+    </div>
+    <div class="sidebar-content">
+        <ul>
+            {$site_pages = $wa->site->pages()}
+            {foreach $site_pages as $page}
+                <li><a href="{$page.url}">{$page.name|escape}</a></li>
+            {/foreach}
+        </ul>
+    </div>
+</div>

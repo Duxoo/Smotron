@@ -1,0 +1,59 @@
+<h1 class="sm-tab-caption sm-block">
+    <span>{if $id}Промокод {$data.name|escape}{else}Новый промокод{/if}</span>
+    <a href="?module=clients#promocode"  class="sm-caption-back-url mr15">Все промокоды</a>
+</h1>
+<form class="sm-form mt10 promocode-form" method="post" action="?module=clients&action=promocodeSave">
+    <input type="hidden" name="channel[id]" value="{if isset($id)}{$id|escape}{/if}">
+    <div class="field">
+        <div class="name">Название</div>
+        <div class="value">
+            <input id="promocode_name" type="text" name="promocode[name]" required value="{if isset($data.name)}{$data.name|escape}{/if}">
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Промокод</div>
+        <div class="value">
+            <input id="promocode_promocode" type="text" name="promocode[promocode]" required value="{if isset($data.promocode)}{$data.promocode|escape}{/if}">
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Количество использований</div>
+        <div class="value">
+            <input id="promocode_count" type="text" name="promocode[count]" required value="{if isset($data.count)}{$data.count|escape}{/if}">
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Дата окончания промокода</div>
+        <div class="value">
+            <input id="datetime_end" type="datetime" name="promocode[datetime_end]" required value="{if isset($data.datetime_end)}{$data.datetime_end|escape}{/if}">
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Тариф</div>
+        <div class="value">
+            {*<input id="datetime_end" type="datetime" name="promocode[datetime_end]" required value="{if isset($data.datetime_end)}{$data.datetime_end|escape}{/if}">*}
+            <select name="promocode[tariff_id]">
+                {foreach $tariffs as $key => $tariff}
+                    <option value="{$tariff['id']}">{$tariff['name']|escape}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Продолжительность действия подарочного тарифа</div>
+        <div class="value">
+            <input id="promocode_tariff_days" type="text" name="promocode[tariff_days]" required value="{if isset($data.tariff_days)}{$data.tariff_days|escape}{/if}">
+        </div>
+    </div>
+    <div class="field">
+        <input type="submit" class="sm-button" value="Сохранить">{if $id} &nbsp или <a href="#" class="promocode-delete">удалить</a>{/if}
+        <span class="form-message"></span>
+    </div>
+</form>
+<script>
+    $(document).ready(function(){
+        $("#datetime_end").datepicker();
+        $('.promocode-form').fSend();
+
+    });
+</script>

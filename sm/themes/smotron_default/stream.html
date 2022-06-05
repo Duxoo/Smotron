@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html class="html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+
+    <title>{$wa->title()|escape}</title>
+    <meta name="Keywords" content="{$wa->meta('keywords')|escape}" />
+    <meta name="Description" content="{$wa->meta('description')|escape}" />
+    {*<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">*}
+    <meta name="theme-color" content="#ffffff">
+
+    <link href="{$wa_theme_url}css/bootstrap.min.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript">var wa_app_url = '{$wa_app_url}';</script>
+    <script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery/jquery-migrate-1.2.1.min.js"></script>
+
+    <link href="{$wa_theme_url}stream.css?v=1.00" rel="stylesheet" type="text/css"/>
+
+    <link href="{$wa_theme_url}smotron.css?v=1.00" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<!--header.html-->
+<div class="row">
+    {include file="`$wa_active_theme_path`/header.html" inline}
+</div>
+
+<!--stream.html-->
+<div class="container">
+        <h1>STREAM</h1>
+        <div class="content">
+            <button id="test">тестик</button>
+            <div id="test_text"></div>
+            <div class="tv-sidebar" style="float: right;display: inline-block">
+                <ul id="channels">
+                    {foreach $data.channels as $key => $channel}
+                        <li data-channel="{$channel.fl_channel_name}">{$channel.fl_channel_name}</li>
+                    {/foreach}
+                </ul>
+            </div>
+            <div class="tv-wrapper" style="display: inline-block">
+                {if isset($channel.fl_channel_name)}
+                    {smFlussonicApi::test($channel.fl_channel_name)}
+                {/if}
+            </div>
+        </div>
+        <!--footer.html-->
+        <div class="row">
+            {include file="`$wa_active_theme_path`/footer.html" inline}
+        </div>
+</div>
+
+<script>
+    $(document).ready( function() {
+        var token ='?token={$data.token}';
+        $("ul#channels li").click(function() {
+            $("#main_tv").attr('src', "https://stream.smotron.tv/" + $(this).attr("data-channel") + "/embed.html"+token);
+        });
+        $("#test").click(function() {
+            $.post("{$wa_app_url}test", function(jData) {
+                console.log(jData.data);
+                $("#test_text").text(jData.data);
+            });
+        });
+    });
+
+</script>
+
+</body>
+</html>

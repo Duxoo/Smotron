@@ -1,0 +1,122 @@
+<div class="content">
+    <div class="container-fluid container data-main-content">
+        <div class="row">
+            <div class="col data-content">
+                <div class="row sm-breadcrumbs">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+                        »
+                        <span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa->getUrl('sm/frontend/myAccess')}" itemprop="item"><span itemprop="name">Пользователи</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+                        »
+                    </div>
+                </div>
+                <h1>{if isset($data.sub_user.name) && $data.sub_user.name !=''}{$data.sub_user.name}{else}Новый пользователь{/if}</h1>
+                <form id="sm-save-subuser-form" action="{$wa->getUrl('sm/frontend')}my/access/subuser/save/" enctype="multipart/form-data" method="post">
+
+                    <div class="field">
+                        <div class="name">Имя</div>
+                        <div class="value">
+                            <input id="name" type="text" name="data[name]"  value="{if isset($data.sub_user.name)}{$data.sub_user.name|escape}{/if}">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="name">Логин</div>
+                        <div class="value">
+                            <input id="login" type="text" name="data[login]" value="{if isset($data.sub_user.login)}{$data.sub_user.login|escape}{/if}" data-id="{$data.id}" readonly>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="name">Пароль</div>
+                        <div class="value">
+                            <input id="password" type="password" name="data[password]"  value="{*{if isset($data.password)}{$data.password|escape}{/if}*}" {if isset($data.sub_user.name) && $data.sub_user.name !=''}disabled{/if}>
+                        </div>
+                    </div>
+                    {if !empty($channels)}
+                        <div class="field">
+                            <div class="name">Каналы</div>
+                            <div class="value">
+                                <div class="sm-chanels-list row">
+                                    {foreach $channels as $channel}
+                                        {*<li data-chanel="{$chanel.value.name}">{$chanel.value.name}</li>*}
+                                        <div class="{*col-3 *}sm-image-wrapper col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 home-channel {if isset($channel.checked) && ($channel.checked == true)}checked{/if}">
+                                            <label>
+                                                {*<img class="sm-channel-list-img" id="chanels[{$channel.fl_channel_name}]" src="{$channel.image}" alt="{$channel.fl_channel_name}">*}
+                                                <div class="home-channel-image" style="background: url({$channel.image})"></div>
+                                                <input type="checkbox" id="chanels[{$channel.id}]" name="data[channels][{$channel.id}]" {if isset($channel.checked) && ($channel.checked == true)}checked{/if}>
+                                                <span class="sm-channel-list-name">{$channel.name}</span>
+                                            </label>
+                                        </div>
+                                    {/foreach}
+                                </div>
+                            </div>
+                        </div>
+                    {else}
+                        <span>Нет доступных каналов</span>
+                    {/if}
+                    <div class="field">
+                        <input type="submit" class="sm-button-white" value="Сохранить">
+                        <span class="form-message"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="col sidebar">
+                {include file="`$wa_active_theme_path`/sidebar.html" inline}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready( function() {
+        $('.home-channel-image').on('click', function() {
+            let wrapper = $(this).parent().parent();
+            if(wrapper.hasClass('checked')){
+                wrapper.removeClass('checked');
+                wrapper.find(input).removeAttr('checked');
+            }else {
+                wrapper.addClass('checked');
+            }
+        });
+
+
+        function toTranslit(text) {
+            return text.replace(/([а-яё])|([\s_-])|([^a-z\d])/gi,
+                function (all, ch, space, words, i) {
+                    if (space || words) {
+                        return space ? '-' : '';
+                    }
+                    var code = ch.charCodeAt(0),
+                        index = code == 1025 || code == 1105 ? 0 :
+                            code > 1071 ? code - 1071 : code - 1039,
+                        t = ['yo', 'a', 'b', 'v', 'g', 'd', 'e', 'zh',
+                            'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p',
+                            'r', 's', 't', 'u', 'f', 'h', 'c', 'ch', 'sh',
+                            'shch', '', 'y', '', 'e', 'yu', 'ya'
+                        ];
+                    return t[index];
+                });
+        };
+
+        var id = $('input#login').data('id');
+        console.log($('input#login'));
+        console.log(id);
+        $('input#name').on('keyup',function(){
+            document.getElementById('login').value =  'U100' + id + '_' + toTranslit(this.value);
+        });
+
+        $('#sm-save-subuser-form').fSend( function(jData) {
+            if(jData.data.result == '1') {
+                if(jData.data.new == '1') {
+                    window.location.href = jData.data.id + '/';
+                }else{
+                    window.location.reload();
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,108 @@
+<h1 class="sm-tab-caption sm-block">
+    <span>Канал {if isset($data.name)} {$data.name|escape}{else}{$data.fl_channel_name|escape}{/if}</span>
+    <a href="?module=settings#channels"  class="sm-caption-back-url mr15">Все каналы</a>
+</h1>
+<form class="sm-form mt10 channel-form" method="post" action="?module=channel&action=save">
+    <input type="hidden" name="channel[id]" value="{if isset($id)}{$id|escape}{/if}">
+    <div class="field">
+        <div class="name">Название</div>
+        <div class="value">
+            <input id="channel_name" type="text" name="channel[name]" required value="{if isset($data.name)}{$data.name|escape}{/if}">
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Код канала в Flussonic</div>
+        <div class="value">
+            <input id="channel_fl_code" type="text" name="channel[fl_channel_name]" required value="{if isset($data.fl_channel_name)}{$data.fl_channel_name|escape}{/if}" disabled>
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Месячная стоимость</div>
+        <div class="value">
+            <input id="channel_price" type="text" name="channel[price]" required value="{if isset($data.price)}{$data.price|escape}{/if}">
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Доступен для показа</div>
+        <div class="value">
+            <input id="channel_price" type="checkbox" name="channel[disabled]" {if $data.disabled == 1}value="0"{else}checked value="1"{/if}>
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Основное изображение</div>
+        <div class="value">
+            {if $data.image}
+                <img width="150px" src="{$data.image}">
+            {/if}
+            <input id="channel_image" type="file" name="image" title="Выбрать новый файл" {if $data.image}style="color:transparent;display: block;"{/if} value="{$data.image}"">
+        </div>
+    </div>
+    <div class="field">
+        <input type="submit" class="sm-button" value="Сохранить">{if $id} &nbsp или <a href="#" class="channel-delete">удалить</a>{/if}
+        <span class="form-message"></span>
+    </div>
+</form>
+<script>
+    $(document).ready(function() {
+        /*$('.channel-form').fSend(function(jData) {
+            if(jData.data.result == '1') {
+                if(jData.data.new == '1') {
+                    window.location.href='?module=channel&id='+jData.data.id;
+                }
+            }
+        });*/
+        $('.channel-form').submit(function () {
+            var form = $(this);
+            var formData = new FormData($(this)[0]), action = $(this).attr('action');
+            $.ajax({
+                contentType: false, // важно - убираем форматирование данных по умолчанию
+                processData: false, // важно - убираем преобразование строк по умолчанию
+                data: formData,
+                dataType: "json",
+                type: "post",
+                url : action,
+                success: function(jData){
+                    var message_field = form.find('.form-message');
+                    if(jData.data.message) {
+                        message_field.html(jData.data.message);
+                    }
+                    if(jData.data.result == '1') {
+                        message_field.css('color', 'green');
+                    }
+                    else {
+                        message_field.css('color', 'red');
+                        if(jData.data.fields) {
+                            $.each(jData.data.fields, function(index, value) {
+                                console.log(index);
+                                if(value.length) {
+                                    form.find('.field-error[data-field="'+index+'"]').html(value);
+                                }
+                                form.find('.field-error[data-field="'+index+'"]').show();
+                            });
+                        }
+                    }
+                    if(jData.data.result == '1') {
+                        if(jData.data.new == '1') {
+                            window.location.href='?module=channel&id='+jData.data.id;
+                        }
+                    }
+                }
+            });
+            return false;
+        });
+
+        $('.channel-delete').click(function() {
+            if(confirm('Удалить этот пост?')) {
+                $.post('?module=channel&action=delete', 'id={$id|escape}', function(jData) {
+                    if(jData.data.result == '1') {
+                        window.location.href = '?module=settings#channels';
+                    }
+                    else {
+                        alert(jData.data.message);
+                    }
+                }, 'json');
+            }
+            return false;
+        });
+    });
+</script>

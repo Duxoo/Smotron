@@ -1,0 +1,134 @@
+<!--header.html-->
+{$site_pages = $wa->site->pages()}
+<div class="col-lg-2"><a href="{$wa_app_url}">ЛОГО</a></div>
+<div class="col-lg-8">
+    <ul class="main-pages row">
+    {foreach $site_pages as $page}
+        {if isset($page.top)}
+            {if $page.top == '1' }
+                <li class="col-lg-4"><a href="{$page.url}">{$page.name|escape}</a></li>
+            {/if}
+        {/if}
+    {/foreach}
+    </ul>
+</div>
+{if $wa->currentUrl() == "/stream/"}
+    <ul class="sm-user-menu">
+        <li>
+            <div class="dropdown-header">
+                <span>{$subuser.name}</span>
+            </div>
+            <ul class="sm-user-submenu">
+                <li><a class="dropdown-item" href="{$wa_app_url}streamLogout">[s`Log out`]</a></li>
+            </ul>
+        </li>
+    </ul>
+{else}
+    <div class="col-lg-2">
+        {if $wa->user()->isAuth()}
+            <ul class="sm-user-menu">
+                <li>
+                    <div class="dropdown-header">
+                        <i class="icon16 image" style="background-image: url('{$wa->user()->getPhoto2x(20)}');"></i>
+                        <span>{$wa->user('name')}</span>
+                    </div>
+                    <ul class="sm-user-submenu">
+                        <li><a class="dropdown-item" href="{$wa_app_url}my/profile/">Профиль</a></li>
+                        <li><a class="dropdown-item" href="{$wa_app_url}my/balance/">Баланс</a></li>
+                        <li><a class="dropdown-item" href="{$wa_app_url}my/channels/">Мои каналы</a></li>
+                        <li><a class="dropdown-item" href="{$wa_app_url}my/tv_channels/">TV-каналы</a></li>
+                        <li><a class="dropdown-item" href="{$wa_app_url}my/tariff/">Мой тариф</a></li>
+                        <li><a class="dropdown-item" href="{$wa_app_url}my/access/">Доступ</a></li>
+                        <li><a class="dropdown-item" href="?logout">[s`Log out`]</a></li>
+                    </ul>
+                </li>
+            </ul>
+        {else}
+            <a class="sm-auth-trigger" href="#{*{$wa->loginUrl()}*}">[s`Log in`]</a>
+            <a class="sm-signup-trigger" href="#{*{$wa->signupUrl()}*}">[s`Sign up`]</a>
+        {/if}
+    </div>
+    <div class="sm-popup sm-signup-popup">
+        <div class="sm-popup-close icon close-red b-close"></div>
+        <h3>[s`Sign up`]</h3>
+        <form class="sm-signup-form" action="{$wa_app_url}signup/">
+            <div class="form-group">
+                <input id="sm_signup_email" type="email" placeholder="Введите ваш e-mail" name="email">
+            </div>
+            <div class="form-group">
+                <input id="sm_signup_promo" type="text" placeholder="Промокод" name="promocode">
+            </div>
+            {$wa->captcha()}
+            <input class="btn btn-primary" type="submit" value='[s`Sign up`]'>
+            <div class="form-message" style="display: none;"></div>
+        </form>
+    </div>
+    <div class="sm-popup sm-auth-popup" action="{$wa_app_url}login/">
+        <div class="sm-popup-close icon close-red b-close"></div>
+        <h3>[s`Log in`]</h3>
+        <form class="sm-auth-form" action="{$wa_app_url}login/">
+            <div class="form-group">
+                <input id="sm_auth_email" type="text" placeholder="Введите ваш e-mail" name="email">
+            </div>
+            <div class="form-group">
+                <input id="sm_auth_password" type="text" placeholder="[`Password`]" name="password">
+            </div>
+            {$wa->captcha()}
+            <input class="btn btn-primary" type="submit" value='[s`Log in`]'>
+            <div class="form-message" style="display: none;"></div>
+        </form>
+    </div>
+
+<script async>
+    $(document).ready(function() {
+       $('.sm-auth-trigger').on('click', function() {
+          $('.b-close').trigger('click');
+          $('.sm-auth-popup').bPopup({
+              transition: 'slideDown'
+          });
+           return false;
+       });
+        $('.sm-signup-trigger').on('click', function() {
+            $('.b-close').trigger('click');
+            $('.sm-signup-popup').bPopup({
+                transition: 'slideDown'
+            });
+            return false;
+        });
+        $('.sm-auth-form').fSend( function(jData) {
+            if(jData.data.result =='1') {
+                window.location.reload();
+            }else if(jData.data.result =='2') {
+                window.location.href = jData.data.url;
+            }
+        });
+        $('.sm-signup-form').submit(function () {
+            $('.sm-signup-form').find('.form-message').hide();
+            var url = $(this).attr('action');
+            var button = $('.sm-signup-form').find('input[type="submit"]');
+            button.attr('disabled', true);
+            $.post(url, $(this).serialize(), function(jData) {
+                $('.sm-signup-form').find('.form-message').html(jData.data.message);
+                if(jData.data.result == '1') {
+                    $('.sm-signup-form').find('input[type="submit"]').slideUp(200);
+                    $('.sm-signup-form').find('.form-group').slideUp(200);
+                    $('.sm-signup-form').find('.form-check').slideUp(200);
+                    $('.sm-signup-form').find('.form-message').css('color', 'green').css('margin-left', '0').css('text-align', 'center').css('margin-bottom', '20px').slideDown(200);
+                    $('.sm-signup-form').closest('.sm-signup-popup').find('.sm-popup-close').hide();
+                    $('.sm-signup-form').find('.sm-popup-form-proceed').slideDown(200);
+                    setTimeout( function () {
+                            window.location.reload();
+                    }
+                    , 1000);
+                }
+                else {
+                    button.removeAttr('disabled');
+                    $('.sm-signup-form').find('.form-message').css('color', 'red').css('display', '');
+                    grecaptcha.reset();
+                }
+            }, 'json');
+            return false;
+        });
+    });
+</script>
+{/if}

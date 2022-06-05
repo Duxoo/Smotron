@@ -1,0 +1,60 @@
+{if count($instances)}
+<table class="zebra sm-payment-table" id="s-settings-payment">
+	<tbody>
+	{foreach $instances as $id => $plugin}
+	<tr data-id="{$id}">
+		<td class="min-width"><i class="icon16 sort"></i></td>
+		<td class="min-width">
+			{if !empty($plugin.logo)}
+				<img src="{$plugin.logo}" class="s-payment-shipping-logo">
+			{elseif !empty($plugin.img)}
+				<img src="{$plugin.img}" class="s-payment-shipping-logo">
+			{/if}
+		</td>
+		<td>
+			<div class="sm-payment-plugin-name{if empty($plugin.status)} gray{/if}">
+			   {$plugin.name|escape}
+			   {if empty($plugin.status)}([`disabled`]){/if}
+			</div>
+			<span class="hint">{strip_tags($plugin.description)}</span>
+		</td>
+		<td class="w100 text-right">
+			<a href="#" class="sm-payment-plugin-action set-payment-plugin nowrap" data-plugin="{$id|escape}"><i class="inline-icon icon settings"></i>Настроить</a>
+		</td>
+		<td class="w100 text-right">
+			<a href="#" class="sm-payment-plugin-action delete-payment-plugin pointer" data-plugin="{$id|escape}"><i class="inline-icon icon delete"></i> Удалить</a>&nbsp&nbsp&nbsp
+		</td>
+	</tr>
+	{/foreach}
+	</tbody>
+</table>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.sm-payment-table').sortable({
+			distance: 5,
+			opacity: 0.75,
+			items: '> tbody > tr:visible',
+			handle: '.sort',
+			cursor: 'move',
+			tolerance: 'pointer',
+			update: function (event, ui) {
+				var id = parseInt($(ui.item).data('id'));
+				var after_id = $(ui.item).prev().data('id');
+				if (after_id === undefined) {
+					after_id = 0;
+				} else {
+					after_id = parseInt(after_id);
+				}
+				$.post('?module=settings&action=paymentSort', 'module_id='+id+'&after_id='+after_id, function(jData) {
+					return;
+				}, 'json');
+			}
+		});
+	});
+</script>
+{else}
+	<div class="sm-fullscreen-error">
+		<div class="sm-fullscreen-error-icon icon warning"></div>
+		<div class="sm-fullscreen-error-text">Пока не определено ни одного метода оплаты</div>
+	</div>
+{/if}

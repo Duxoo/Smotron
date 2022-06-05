@@ -1,0 +1,273 @@
+<div class="content">
+	<div class="container-fluid container data-main-content">
+		<div class="row">
+			<div class="col data-content">
+				<div class="row sm-breadcrumbs">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+						»
+					</div>
+				</div>
+				<h1>Управление подпиской</h1>
+				<div class="data-inner-content">
+					<div class="info-message">
+						<div class="info-message-icon icon info"></div>
+						<div class="info-message-text">
+							Платная подписка позволяет получить доступ к просмотру каналов и созданию собственных.
+							Количество и состав каналов регулируются Вашим тарифом. Узнайте больше <a href="/info/pricing/">в информационном разделе</a>.
+						</div>
+					</div>
+					<div class="h15"></div>
+					<div class="h15"></div>
+					{if !$user_data.subscribtion_valid}
+						<h2>Тарифы Смотрон</h2>
+						<p>Чтобы пользоваться Смотрон в полной мере, требуется выбрать тариф. После того, как Вы определитесь, мы предложим Вам оплатить тариф удобным для Вас способом</p>
+						<div class="info-tariffs color-darkgray">
+							{foreach $tariffs as $ntariff}
+								<div class="home-tariff">
+									<div class="home-tariff-inner">
+										<div class="home-tariff-caption">{$ntariff.name|escape}</div>
+										<div class="home-tariff-summary">{ifempty($ntariff.summary, 'Добавить поле краткого описания')|escape}</div>
+										<ul class="home-tariff-features">
+											<li><b>{$ntariff.channel_count|escape} {$wa->sm->skl($ntariff.channel_count, 'канал', 'канала', 'каналов')}</b></li>
+											<li><b>{$ntariff.channel_custom_count|escape} {$wa->sm->skl($ntariff.channel_custom_count, 'собственный канал', 'собственных канала', 'собственных каналов')}</b> можно создать</li>
+											<li>Одновременный просмотр с <b>{$ntariff.device_count|escape} {$wa->sm->skl($ntariff.device_count, 'устройства', 'устройств', 'устройств')}</b></li>
+										</ul>
+										<div class="home-tariff-price"><span class="home-tariff-price-value">{wa_currency($ntariff.price, '', '%2i')}</span> руб. / 30 дней</div>
+										<div class="home-tariff-more">
+											<div class="home-tariff-more-splitter"></div>
+											<a href="{$wa->getUrl('sm/frontend/tariff', ['tariff_url' => $ntariff.url])}" data-url="{$ntariff.url}">Подробнее</a>
+										</div>
+									</div>
+								</div>
+							{/foreach}
+						</div>
+						<div class="h15"></div>
+						<div class="h15"></div>
+						<div class="info-message">
+							<div class="info-message-icon icon info"></div>
+							<div class="info-message-text">
+								Если Вам не подошел ни один из наших стандартных тарифов, то вы можете легко <a href="/my/tariff/custom/">создать свой персональный тариф</a>.
+							</div>
+						</div>
+
+						{*<h2>Или создайте свой тариф</h2>
+						<div class="custom-tariff-block">
+							<form id="tariff-form" class="sm-form mt10 tariff-form" method="post" action="{$wa->getUrl('sm/frontend/myTariffCustomCreate')}">
+								<div class="form-group">
+									<label for="tariff_name">Название тарифа</label>
+									<input id="tariff_name" type="text" name="tariff[name]" required value="">
+									<small id="sm_profile_name_help" class="form-text text-muted">Название вашего тарифа</small>
+								</div>
+								<div class="form-group">
+									<label for="tariff_range">Количество потоков</label>
+									<p class="d-inline-block">: <span id="tariff_label"></span></p>
+									<input id="tariff_range" type="range" name="tariff[device_count]" min="0" max="20" step="1" value="" data-price="{$settings.ctariff_stream_price}">
+									<small id="sm_profile_name_help" class="form-text text-muted">Количество одновременных потоков</small>
+								</div>
+								<div class="form-group">
+									<label for="tariff_custom_range">Количество своих каналов</label>
+									<p class="d-inline-block">: <span id="tariff_clabel"></span></p>
+									<input id="tariff_custom_range" type="range" name="tariff[channel_custom_count]" min="0" max="20" step="1" value="" data-price="{$settings.ctariff_channel_price}">
+									<small id="sm_profile_name_help" class="form-text text-muted">Количество созданных вами каналов</small>
+								</div>
+								<div class="form-group">
+									<div class="name">Каналы входящие в тариф</div>
+									<div class="value">
+										<input id="search" type="text" name="search" placeholder="Поиск...">
+										<button type="button" class="check-all sm-button-white" data-class="sm-active-checkbox">Выбрать все</button>
+										<div class="h15"></div>
+										<div class="sm-checkbox-list row">
+											{$channels = $wa->sm->getChannels()}
+											{foreach $channels as $key => $channel}
+												<label class="checkbox-label sm-active-checkbox col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-6" data-name="{$channel.name}" data-price="{$channel.price}">
+													<div class="home-channel-image" style="background: url('{$channel.image|escape}')"></div>
+													<input type="checkbox" name="tariff[channels][]" value="{$channel.id}">
+													<span class="button">{$channel.name|escape}</span>
+												</label>
+											{/foreach}
+										</div>
+									</div>
+									<small id="sm_profile_name_help" class="form-text text-muted">Выберите каналы входящие в ваш тариф</small>
+								</div>
+								<div class="form-group">
+									<div class="name">Итоговая стоимость</div>
+									<span class="tariff-price">0</span><span> руб.</span>
+								</div>
+								<div class="form-group">
+									<input type="submit" class="sm-button" value="Оплатить">
+									<span class="form-message"></span>
+								</div>
+							</form>
+						</div>*}
+						<script type="text/javascript">
+							$(document).ready(function() {
+								$('.info-tariffs').slick({
+									infinite: true,
+										slidesToShow: 2,
+										slidesToScroll: 2,
+										adaptiveHeight: true,
+										responsive: [
+										{
+											breakpoint: 1151,
+											settings: {
+												slidesToShow: 2,
+												slidesToScroll: 2,
+											}
+										},
+										{
+											breakpoint: 768,
+											settings: {
+												slidesToShow: 2,
+												slidesToScroll: 2,
+											}
+										},
+										{
+											breakpoint: 576,
+											settings: {
+												slidesToShow: 1,
+												slidesToScroll: 1,
+											}
+										}
+									]
+								});
+
+								/*var slider = document.getElementById("tariff_range");
+								var output = document.getElementById("tariff_label");
+								output.innerHTML = slider.value;
+								slider.oninput = function() {
+									output.innerHTML = this.value;
+
+									let amount = parseInt($('.tariff-price').html());
+									amaunt = parseInt((sprice * this.value)+(cprice * cslider.value));
+									$('.tariff-price').text(parseInt(amaunt));
+								};
+								var cslider = document.getElementById("tariff_custom_range");
+								var coutput = document.getElementById("tariff_clabel");
+								coutput.innerHTML = cslider.value;
+								cslider.oninput = function() {
+									coutput.innerHTML = this.value;
+
+									let amount = parseInt($('.tariff-price').html());
+									amaunt = parseInt((sprice * slider.value)+(cprice * this.value));
+									$('.tariff-price').text(parseInt(amaunt));
+								};
+
+								var preamaunt = 0;
+								var sprice = slider.dataset.price;
+								var cprice = cslider.dataset.price;
+
+								preamaunt = parseInt((sprice * slider.value)+(cprice * cslider.value));
+								$('.tariff-price').text(parseInt(preamaunt));
+
+								function checkElements(e) {
+									let chebox = e.parent().find('input');
+									e.trigger('click');
+								};
+
+								$("#search").keyup(function(){
+									_this = this;
+
+									$.each($(".sm-checkbox-list .checkbox-label"), function() {
+										if($(this).data('name').toLowerCase().indexOf($(_this).val().toLowerCase()) === -1) {
+											$(this).removeClass('sm-active-checkbox');
+											$(this).addClass('sm-hide-checkbox');
+										} else {
+											$(this).addClass('sm-active-checkbox');
+											$(this).removeClass('sm-hide-checkbox');
+										}
+									});
+								});
+
+								$('.check-all').on('click',function () {
+									$(".sm-checkbox-list .checkbox-label.sm-active-checkbox").each(function() {
+										checkElements($(this).find('input'));
+									});
+								});
+
+								$('.checkbox-label input').on('click', function(){
+									let check = $(this).attr('checked');
+									let amount = parseInt($('.tariff-price').html());
+									let price = parseInt($(this).parent().data('price'));
+									if (check == 'checked'){
+										amount = amount + price;
+									} else {
+										amount = amount - price;
+									}
+									$('.tariff-price').text(parseInt(amount));
+								});*/
+							});
+						</script>
+					{else}
+						<h2>Ваш текущий тариф</h2>
+						<div class="info-message">
+							<div class="info-message-icon icon success"></div>
+							<div class="info-message-text">
+								Тариф <b>{$tariff.name|escape}</b> подключен<br>
+								Действует до <b>{$user_data.subscribtion_valid_till|wa_date:'humandatetime'}</b><br>
+								<a href="{$wa->getUrl('sm/frontend/tariff', ['tariff_url' => $tariff.url])}">Информация о тарифе</a>
+								<div class="h15"></div>
+								<a class="sm-button-white" href="/checkout/?tariff_id={$tariff.id}&extend=1">Продлить тариф</a>
+							</div>
+						</div>
+						<div class="h15"></div>
+						<div class="h15"></div>
+						<h2>Изменить тариф</h2>
+						<div class="info-message">
+							<div class="info-message-icon icon info"></div>
+							<div class="info-message-text">
+								Если текущий тариф перестал вас устраивать, то вы можете его изменить.
+								Информация о <a href="/info/pricing">тарифах</a>.
+								<div class="h15"></div>
+								<a class="sm-button-white" href="/checkout/?tariff_id={$tariff.id}&change=1">Изменить тариф</a>
+							</div>
+						</div>
+						<div class="h15"></div>
+						<div class="h15"></div>
+						<h2>Возврат средств</h2>
+						{if $subscribtion_refund.amount > 0}
+							<div class="info-message">
+								<div class="info-message-icon icon info"></div>
+								<div class="info-message-text">
+									Что-то не понравилось или Вы хотите приостановить действие подписки? Нет проблем!
+									Средства возвращаются согласно <a href="{ifempty($sf_settings.link_refund, '#')|escape}">условиям</a>.
+									Сумма зависит от того, сколько дней Вы уже пользуетесь подпиской. Если отменить подписку сейчас, мы вернем
+									<b>{wa_currency($subscribtion_refund.amount, '', '%2i')} руб.</b>
+								</div>
+							</div>
+							<div class="h15"></div>
+							<form class="sf-subscribtion-refund-form" action="refund/">
+								<div class="form-group">{$wa->captcha()}</div>
+								<input type="submit" class="sm-button-white" value="Отменить подписку">
+								<div class="form-message"></div>
+							</form>
+							<script type="text/javascript">
+								$(document).ready(function() {
+									$('.sf-subscribtion-refund-form').fSend(function(jData) {
+										if(jData.data.result == 1) {
+											window.location.reload();
+										}
+									});
+								});
+							</script>
+						{else}
+							<div class="info-message">
+								<div class="info-message-icon icon warning"></div>
+								<div class="info-message-text">
+									Вы пользуетесь подпиской больше половины времени ее действия. По <a href="{ifempty($sf_settings.link_refund, '#')|escape}">условиям возврата средств</a>,
+									даже если отменить ее, Вам ничего не вернется на счет. Поэтому здесь нет кнопки отмены.
+								</div>
+							</div>
+						{/if}
+					{/if}
+				</div>
+			</div>
+			<div class="col sidebar">
+				{include file="`$wa_active_theme_path`/sidebar.html" inline}
+			</div>
+		</div>
+	</div>
+</div>

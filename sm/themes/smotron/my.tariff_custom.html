@@ -1,0 +1,227 @@
+<div class="content">
+    <div class="container-fluid container data-main-content">
+        <div class="row">
+            <div class="col data-content">
+                <div class="row sm-breadcrumbs">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+                        »
+                        <span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Управление подпиской</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+                        »
+                    </div>
+                </div>
+                <h1>Свой тариф</h1>
+                <div class="data-inner-content">
+                    <div class="custom-tariff-block">
+                        <form id="tariff-form" class="sm-form mt10 tariff-form" method="post" action="{$wa->getUrl('sm/frontend/myTariffCustomCreate')}">
+                            <div class="form-group">
+                                <div class="display-inline-block">Выберите каналы</div>
+                                <input id="search" type="text" name="search" placeholder="Поиск...">
+                                <div class="channels-search">
+                                    <span>ПОИСК КАНАЛА</span>
+                                    <button type="button" class="check-all icon search i-button" data-class="sm-active-checkbox"></button>
+                                </div>
+                                <div class="h15"></div>
+                                <div class="value">
+                                    <div class="sm-checkbox-list row">
+                                        {$channels = $wa->sm->getChannels()}
+                                        {foreach $channels as $key => $channel}
+                                            <label class="tariff-checkbox-label sm-active-checkbox col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-6" data-name="{$channel.name}" data-price="{$channel.price}">
+                                                <div class="tariff-channel-img" style="background: url('{$channel.image|escape}')"></div>
+                                                <div class="tariff-channel-text">
+                                                    <input type="checkbox" name="tariff[channels][]" data-price="{$channel.price}" value="{$channel.id}" style="display: none">
+                                                    <span class="button">{$channel.name|escape}</span>
+                                                </div>
+                                            </label>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                                {*<small id="sm_profile_name_help" class="form-text text-muted">Выберите каналы входящие в ваш тариф</small>*}
+                            </div>
+                            <div class="h15"></div>
+                            <div class="h15"></div>
+                            <input id="tariff_name" type="text" name="tariff[name]" hidden required value="Собственный тариф пользователя: {$wa->user()->get('firstname')|escape}">
+
+                            <div class="row add-channel-block">
+                                <div class="col-lg-5">
+                                    <p>Не нашли нужного  телеканала? Оставьте заявку на необходимый, и мы включим его в <br/>Ваш тариф.</p>
+                                </div>
+                                <div class="col-lg-5 offset-lg-2 channel-request">
+                                    <a href="/help/">Добавить свой канал<img src="/wa-apps/sm/themes/smotron/img/help-arrow.png"/></a>
+                                </div>
+                            </div>
+
+                            <div class="h15"></div>
+                            <div class="h15"></div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="tariff_custom_range">Собственные каналы</label>
+                                        <div class="controll-wrapper">
+                                            <div class="button-wrapper" data-step="1" {*onclick="document.getElementById('tariff_range').stepDown(1)"*}><i class="icon minus"></i></div>
+                                            <div class="button-wrapper" data-step="-1" {*onclick="document.getElementById('tariff_range').stepUp(1)"*}><i class="icon plus"></i></div>
+                                            <input id="range-count-channels" class="range-count" type="text" value="0">
+                                        </div>
+                                        <div class="range-slider">
+                                            <span class="range-min">0</span>
+                                            <input id="tariff_custom_range" type="range" name="tariff[channel_custom_count]" min="0" max="20" step="1" value="0" data-price="{$settings.ctariff_channel_price}">
+                                            <span id="channels-bullet" class="rs-label">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="h15"></div>
+                                    <div class="h15"></div>
+                                    <div class="form-group">
+                                        <label for="tariff_range">Устройства</label>
+                                        <div class="controll-wrapper">
+                                            <div class="button-wrapper" data-step="1" {*onclick="document.getElementById('tariff_range').stepDown(1)"*}><i class="icon minus"></i></div>
+                                            <div class="button-wrapper" data-step="-1" {*onclick="document.getElementById('tariff_range').stepUp(1)"*}><i class="icon plus"></i></div>
+                                            <input id="range-count-device" class="range-count" type="text" value="0">
+                                        </div>
+                                        <div class="range-slider">
+                                            <span class="range-min">0</span>
+                                            <input id="tariff_range" type="range" name="tariff[device_count]" min="0" max="20" step="1" value="0" data-price="{$settings.ctariff_stream_price}">
+                                            <span id="device-bullet" class="rs-label">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group pay-block col-lg-5 offset-1">
+                                    <div class="price-wrapper">
+                                        <div class="price">
+                                            <span class="tariff-price">0</span><span> р./мес.</span>
+                                        </div>
+                                        <div class="h15"></div>
+                                        <div class="h15"></div>
+                                        <input type="submit" class="sm-button" value="Оформить тариф">
+                                        <span class="form-message"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $('.channels-search').on('click',function() {
+                                $('#search').trigger("focus");
+                            });
+
+                            $('.range-count').on('change', function(){
+                                let value = $(this).val();
+                                let range = $(this).parent().parent().find('input[type=range]');
+                                range.val(value);
+                                range.trigger('input');
+                                showSliderValue();
+                                showChannelsSliderValue();
+                            });
+
+                            var rangeSliderChannels = document.getElementById("tariff_custom_range");
+                            var rangeBulletChannels = document.getElementById("channels-bullet");
+                            rangeSliderChannels.addEventListener("input", showChannelsSliderValue, false);
+                            function showChannelsSliderValue() {
+                                rangeBulletChannels.innerHTML = rangeSliderChannels.value;
+                                var bulletPosition = (rangeSliderChannels.value /rangeSliderChannels.max);
+                                rangeBulletChannels.style.left = (bulletPosition * 440) + "px";
+                            }
+
+                            var rangeSlider = document.getElementById("tariff_range");
+                            var rangeBullet = document.getElementById("device-bullet");
+                            rangeSlider.addEventListener("input", showSliderValue, false);
+                            function showSliderValue() {
+                                rangeBullet.innerHTML = rangeSlider.value;
+                                var bulletPosition = (rangeSlider.value /rangeSlider.max);
+                                rangeBullet.style.left = (bulletPosition * 440) + "px";
+                            }
+
+                            var slider = document.getElementById("tariff_range");
+                            var output = document.getElementById("range-count-device");
+                            output.innerHTML = slider.value;
+                            slider.oninput = function() {
+                                output.value = this.value;
+
+                                let amount = parseInt($('.tariff-price').html());
+                                amaunt = parseInt((sprice * this.value)+(cprice * cslider.value));
+                                $('.tariff-price').text(parseInt(amaunt));
+                            };
+
+                            var cslider = document.getElementById("tariff_custom_range");
+                            var coutput = document.getElementById("range-count-channels");
+                            coutput.innerHTML = cslider.value;
+                            cslider.oninput = function() {
+                                coutput.value = this.value;
+
+                                let amount = parseInt($('.tariff-price').html());
+                                amaunt = parseInt((sprice * slider.value)+(cprice * this.value));
+                                $('.tariff-price').text(parseInt(amaunt));
+                            };
+
+                            $('.button-wrapper').on('click', function(){
+                                let step = parseInt($(this).attr('data-step'));
+                                let range = $(this).parent().parent().find('input[type=range]');
+                                let value = range.val();
+                                range.val(value - step);
+                                range.trigger('input');
+                                showSliderValue();
+                                showChannelsSliderValue();
+                            });
+
+                            var preamaunt = 0;
+                            var sprice = slider.dataset.price;
+                            var cprice = cslider.dataset.price;
+
+                            preamaunt = parseInt((sprice * slider.value)+(cprice * cslider.value));
+                            $('.tariff-price').text(parseInt(preamaunt));
+
+                            function checkElements(e) {
+                                let chebox = e.parent().find('input');
+                                e.trigger('click');
+                            };
+
+                            $("#search").keyup(function(){
+                                _this = this;
+                                console.log($(_this).val());
+                                $.each($(".sm-checkbox-list .tariff-checkbox-label"), function() {
+                                    if($(this).data('name').toLowerCase().indexOf($(_this).val().toLowerCase()) === -1) {
+                                        $(this).removeClass('sm-active-checkbox');
+                                        $(this).addClass('sm-hide-checkbox');
+                                    } else {
+                                        $(this).addClass('sm-active-checkbox');
+                                        $(this).removeClass('sm-hide-checkbox');
+                                    }
+                                });
+                            });
+
+                            $('.check-all').on('click',function () {
+                                $(".sm-checkbox-list .checkbox-label.sm-active-checkbox").each(function() {
+                                    checkElements($(this).find('input'));
+                                });
+                            });
+
+                            $('.tariff-checkbox-label input').on('click', function(){
+                                let check = $(this).attr('checked');
+                                let amount = parseInt($('.tariff-price').html());
+                                let price = parseInt($(this).data('price'));
+                                let label = $(this).parent().parent();
+                                if (check == 'checked'){
+                                    amount = amount + price;
+                                    label.addClass('checked-label');
+                                } else {
+                                    amount = amount - price;
+                                    label.removeClass('checked-label');
+                                }
+                                $('.tariff-price').text(parseInt(amount));
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+            <div class="col sidebar">
+                {include file="`$wa_active_theme_path`/sidebar.html" inline}
+            </div>
+        </div>
+    </div>
+</div>

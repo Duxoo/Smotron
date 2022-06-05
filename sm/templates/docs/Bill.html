@@ -1,0 +1,123 @@
+<table style="width: 100%; border-collapse: collapse;">
+	<tr>
+		<td colspan="2" rowspan="2" style="border: 1px solid black; width: 59%;">
+			{ifempty($data.host_bank, '')|escape}<br><br>
+		</td>
+		<td style="border: 1px solid black; vertical-align: top; width: 11%;">
+			БИК
+		</td>
+		<td rowspan="2" style="border: 1px solid black; border-bottom: none; vertical-align: top; width: 30%;">
+			{ifempty($data.host_bik, '')|escape}<br>
+			{ifempty($data.host_ks, '')|escape}
+		</td>
+	</tr>
+	<tr>
+		<td style="vertical-align: top;">Сч. №</td>
+	</tr>
+	<tr>
+		<td style="border: 1px solid black;">ИНН {ifempty($data.host_inn, '')|escape}</td>
+		<td style="border: 1px solid black;">{if !empty($data.host_kpp)}КПП {$data.host_kpp|escape}{/if}</td>
+		<td rowspan="2" style="vertical-align: top; border: 1px solid black;">Сч. №<br><br></td>
+		<td rowspan="2" style="vertical-align: top; border: 1px solid black;">{ifempty($data.host_rs, '')|escape}</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="border: 1px solid black;">
+			{ifempty($data.host_company, '')|escape}
+		</td>
+	</tr>
+</table>
+<div style="height: 30px;"></div>
+<div style="font-size: 18px; padding: 0;">
+	{$bill_date = $data.date|wa_date:'humandate'}
+	Счет на оплату №{$data.number|escape} от {$bill_date|escape} г.
+</div>
+<hr>
+<div style="height: 60px;"></div>
+<table style="width: 100%;">
+	<tr>
+		<td style="width: 14%;">Поставщик</td>
+		<td style="width: 86%; font-weight: bold;">
+			{ifempty($data.host_company, '')|escape},
+			ИНН {ifempty($data.host_inn, '')|escape},
+			{if !empty($data.host_kpp)}КПП {ifempty($data.host_kpp, '')|escape},{/if}
+			{ifempty($data.host_zip, '')|escape}, {ifempty($data.host_address, '')|escape}
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+	</tr>
+	<tr>
+		<td>Покупатель</td>
+		<td style="font-weight: bold;">
+			{ifempty($data.user_company, '')|escape},
+			ИНН {ifempty($data.user_inn, '')|escape},
+			{if !empty($data.user_kpp)}КПП {ifempty($data.user_kpp, '')|escape},{/if}
+			{ifempty($data.user_zip, '')|escape}, {ifempty($data.user_address, '')|escape}
+		</td>
+	</tr>
+</table>
+<div style="height: 60px;"></div>
+<table cellpadding="1" style="border-collapse: collapse;">
+	<tr>
+		<td style="border: 1px solid black; vertical-align: top; font-weight: bold; text-align: center; width: 4%;">№</td>
+		<td style="border: 1px solid black; vertical-align: top; font-weight: bold; text-align: center; width: 10%;">Артикул</td>
+		<td style="border: 1px solid black; vertical-align: top; font-weight: bold; text-align: center; width: 45%;">Наименование товара</td>
+		<td style="border: 1px solid black; vertical-align: top; font-weight: bold; text-align: center; width: 10%;">Кол-во</td>
+		<td style="border: 1px solid black; vertical-align: top; font-weight: bold; text-align: center; width: 7%;">Ед.</td>
+		<td style="border: 1px solid black; vertical-align: top; font-weight: bold; text-align: center; width: 12%;">Цена</td>
+		<td style="border: 1px solid black; vertical-align: top; font-weight: bold; text-align: center; width: 12%;">Сумма</td>
+	</tr>
+	<tr>
+		<td style="border: 1px solid black; vertical-align: top; text-align: center;">1</td>
+		<td style="border: 1px solid black; vertical-align: top; text-align: left;">{'CT'|cat:$order.tariff_id|escape}</td>
+		<td style="border: 1px solid black; vertical-align: top; text-align: left;">Информационно-вычислительные услуги: оплата тарифного плана "{$order.tariff_name|escape}" на 30 дней</td>
+		<td style="border: 1px solid black; vertical-align: top; text-align: center;">1</td>
+		<td style="border: 1px solid black; vertical-align: top; text-align: center;">шт</td>
+		<td style="border: 1px solid black; vertical-align: top; text-align: right;">{wa_currency($order.total, 'RUB', '%2i')} руб.</td>
+		<td style="border: 1px solid black; vertical-align: top; text-align: right;">
+			{wa_currency($order.total, 'RUB', '%2i')} руб.
+		</td>
+	</tr>
+	<tr><td colspan="7"></td></tr>
+	<tr>
+		<td colspan="3"></td>
+		<td colspan="3" style="font-weight: bold; text-align: right;">Итого:</td>
+		<td style="font-weight: bold; text-align: right;"> {wa_currency($order.total, 'RUB', '%2i')} руб. </td>
+	</tr>
+	<tr>
+		<td colspan="3"></td>
+		{$nds = intval(ifempty($params.nds, 20))/100}
+		<td colspan="3" style="font-weight: bold; text-align: right;">В том числе НДС:</td>
+		<td style="font-weight: bold; text-align: right;"> без НДС </td>
+	</tr>
+	<tr>
+		<td colspan="3"></td>
+		<td colspan="3" style="font-weight: bold; text-align: right;">Всего к оплате:</td>
+		<td style="font-weight: bold; text-align: right;"> {wa_currency($order.total, 'RUB', '%2i')} руб. </td>
+	</tr>
+</table>
+<div style="height: 60px;"></div>
+<div>
+	Всего наименований 1 на сумму {wa_currency($order.total, 'RUB', '%2i')} руб.<br>
+	{$literal_price = wa_currency($order.total, 'RUB', '%w{n}')}
+	<b>{mb_strtoupper(mb_substr($literal_price, 0, 1))}{mb_substr($literal_price, 1)}, {$order.total*100%100} копеек</b>
+</div>
+<div style="height: 60px;"></div>
+Номер заказа: {$order.id|escape}.
+<hr>
+<div style="height: 60px;"></div>
+<div style="height: 60px;"></div>
+<div style="height: 60px;"></div>
+<table>
+	<tr>
+		<td>Руководитель предприятия</td>
+		<td>____________________________</td>
+		<td>({ifempty($data.host_director, '        ')|escape})</td>
+	</tr>
+	<tr><td colspan="3"></td></tr>
+	<tr>
+		<td>Главный бухгалтер</td>
+		<td>____________________________</td>
+		<td>({ifempty($data.host_buh, '       ')|escape})</td>
+	</tr>
+</table>

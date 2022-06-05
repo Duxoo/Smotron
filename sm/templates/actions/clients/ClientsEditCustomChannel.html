@@ -1,0 +1,150 @@
+<h1 class="sm-tab-caption sm-block">
+    <span>{if $channel_data.id}Канал {$channel_data.name|escape}{/if}</span>
+    <a href="?module=clients"  class="sm-caption-back-url mr15">Все каналы</a>
+</h1>
+<div class="h15"></div>
+<div class="sm-popup" style="display: none;">
+    {foreach $all_videos as $key => $value}
+        <div class="append-block" data-name="{$value.name|escape}" data-id="{$value.id|escape}" data-duration="{$value.duration|escape}">{$value.name|escape}</div>
+    {/foreach}
+</div>
+<form id="channels-edit-form" method="POST" action="?module=clients&action=editCustomChannelSave">
+    <input type="text" name="channel_id" value="{$channel_data.id}" hidden>
+    <input type="text" name="channel_name" value="{$channel_data.name}" hidden>
+    <input type="text" name="user_id" value="{$user_id}" hidden>
+    <table id="t_user_channel" class="sm-table">
+        <thead>
+        <tr>
+            <th style="display: none"></th>
+            <th class="th30"></th>
+            <th>Имя файла</th>
+            <th>Продолжительность</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="listWithHandle">
+        {foreach $videos as $video}
+            <tr class="list-group-item">
+                <td style="display: none"><input type="text" name="videos[]" value="{$video.video_id}" hidden></td>
+                <td value="{$video.position|escape}"><i class="sm-icon sort"></i></td>
+                <td>{$video.data.name|escape}</td>
+                <td>{$video.data.duration|escape}</td>
+                <td><i class="sm-icon delete"></i></td>
+                <td><i class="add-button sm-icon append" data-pos="{$video.position|escape}"></i></td>
+            </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    <div class="h15"></div>
+    <div class="h15"></div>
+    <br/>
+    <input type="submit" class="sm-button" value="Сохранить">
+    <span class="form-message"></span>
+</form>
+<script>
+    $(document).ready(function(){
+        $('#channels-edit-form').fSend( function(jData) {
+            if(jData.data.result == 1){
+                window.location.href = '?module=clients&action=editCustomChannel&channel_id=' + jData.data.row_id + '&user_id=' + {$user_id};
+            };
+        });
+        $('.delete').on('click',function(){
+            $(this).parent().parent().remove();
+
+            /*var user_channel = $('#t_user_channel').dataTable( {
+                "processing": true,
+                "bPaginate": false,
+                "ordering": false,
+                "searching": false,
+                "language":{
+                    "sLengthMenu": "Показывать _MENU_ записей",
+                    "sZeroRecords": "Нет записей, удовлетворяющих условиям поиска",
+                    "sInfo": "Отображаются записи с _START_ до _END_ из _TOTAL_",
+                    "sInfoEmpty": "Отображаются записи с 0 до 0 из 0",
+                    "sInfoFiltered": "(отфильтровано из _MAX_ записей)",
+                    "sSearch": "Поиск:",
+                    "processing": "Обработка...",
+                    "oPaginate": { "sNext": ">>", "sPrevious": "<<" }
+                }
+            });*/
+        });
+
+        $('.add-button').on('click', function(){
+            target = $(this);
+            $('.sm-popup').bPopup();
+        });
+
+        $('.append-block').on('click', function() {
+            var thisb = $(this);
+            var el = target.parent().parent();
+            $('#t_user_channel').dataTable().fnDestroy();
+            el.after(
+                '<tr class="list-group-item">' +
+                '<td style="display: none"><input type="text" name="videos[]" value="' + thisb.data('id') + '" hidden></td>' +
+                '<td><i class="sm-icon sort"></i></td>' +
+                '<td>' + thisb.data("name") + '</td>' +
+                '<td>' + thisb.data("duration") + '</td>' +
+                '<td><i class="icon delete3"></i></td>' +
+                '<td><i class="add-button icon append"></i></td>' +
+                '</tr>'
+            );
+
+            var user_channel = $('#t_user_channel').dataTable( {
+                "processing": true,
+                "bPaginate": false,
+                "ordering": false,
+                "searching": false,
+                "language":{
+                    "sLengthMenu": "Показывать _MENU_ записей",
+                    "sZeroRecords": "Нет записей, удовлетворяющих условиям поиска",
+                    "sInfo": "Отображаются записи с _START_ до _END_ из _TOTAL_",
+                    "sInfoEmpty": "Отображаются записи с 0 до 0 из 0",
+                    "sInfoFiltered": "(отфильтровано из _MAX_ записей)",
+                    "sSearch": "Поиск:",
+                    "processing": "Обработка...",
+                    "oPaginate": { "sNext": ">>", "sPrevious": "<<" }
+                }
+            });
+
+            $('.sm-popup').bPopup().close();
+
+            $('.add-button').on('click', function(){
+                target = $(this);
+                $('.sm-popup').bPopup();
+            });
+        });
+
+        var user_channel = $('#t_user_channel').dataTable( {
+            "processing": true,
+            "bPaginate": false,
+            "ordering": false,
+            "searching": false,
+            "language":{
+                "sLengthMenu": "Показывать _MENU_ записей",
+                "sZeroRecords": "Нет записей, удовлетворяющих условиям поиска",
+                "sInfo": "Отображаются записи с _START_ до _END_ из _TOTAL_",
+                "sInfoEmpty": "Отображаются записи с 0 до 0 из 0",
+                "sInfoFiltered": "(отфильтровано из _MAX_ записей)",
+                "sSearch": "Поиск:",
+                "processing": "Обработка...",
+                "oPaginate": { "sNext": ">>", "sPrevious": "<<" }
+            }
+        });
+
+        var sortable = Sortable.create(listWithHandle, {
+            handle: '.sm-icon.sort',
+            sort:'true' ,
+            animation: 150,
+            onChange: function(evt) {
+                let itemCollection = sortable.el.children;
+                let data = [];
+                for(const el of itemCollection) {
+                    var index = Array.prototype.indexOf.call(el.parentElement.children, el);
+                    data[index] = Number(el.getAttribute('id'));
+                };
+                //$.post('?module=tariff&action=move',{ "data":data });
+            }
+        });
+    });
+</script>

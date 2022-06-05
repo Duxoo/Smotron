@@ -1,0 +1,25 @@
+<h1>МОЙ БАЛАНС</h1>
+
+<div class="sm-balance-total">
+    <span>{wa_currency($balance['total'],$balance['currency'])}</span>
+</div>
+
+<div class="sm-replenish">
+    <input type="button" class="green sm-replenish-button" value="Пополнить">
+</div>
+<h3>ИСТОРИЯ</h3>
+<div class="sm-replenish-log">
+    <ul>
+        {foreach $balance.log as $key => $field}
+            <li>{$field.amount} {$field.description} {$field.datetime}</li>
+        {/foreach}
+    </ul>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('.sm-replenish-button').on('click', function() {
+            $.post('replenish/');
+        });
+    });
+</script>

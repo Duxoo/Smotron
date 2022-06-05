@@ -1,0 +1,173 @@
+<div class="content">
+	<div class="container-fluid container data-main-content">
+		<div class="row">
+			<div class="col data-content">
+				<div class="row sm-breadcrumbs">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+						»
+					</div>
+				</div>
+				<h1>Оформление подписки</h1>
+				<div class="data-inner-content">
+					<div class="pay-count-wrapper">
+						<select id="select-day-pay-form" form="pay-form" name="month_count">
+							<option value="1" data-discount="0" selected>30 дней</option>
+							<option value="3" data-discount="{$sm_settings['90day']}">90 дней</option>
+							<option value="6" data-discount="{$sm_settings['180day']}">180 дней</option>
+						</select>
+					</div>
+					<h3>Выберите подходящий тариф</h3>
+
+					<div class="h15"></div>
+					<div class="checkout-tariffs">
+						{foreach $tariffs as $key => $tariff}
+							<div class="checkout-tariff{if $preferred_tariff == $tariff.id} selected{/if}" data-tariff="{$tariff.id|escape}" data-name="{$tariff.name|escape}" data-clearprice="{$tariff.price}" data-price="{wa_currency($tariff.price, '', '%2i')} руб.">
+								<div class="checkout-tariff-caption">
+									<div class="checkout-tariff-price" data-price="{$tariff.price}"><span>{wa_currency($tariff.price, '', '%2i')}</span> руб.{if $checkout_mode == 'subscribe'} / 30 дней{/if}</div>
+									<div class="checkout-tariff-name">{$tariff.name|escape}</div>
+								</div>
+								<div class="checkout-tariff-description {if $preferred_tariff != $tariff.id} hidden{/if}">
+									<div class="checkout-tariff-summary">{$tariff.summary|escape}</div>
+									<ul class="checkout-tariff-options">
+										<li><b>{$tariff.channel_count|escape} {$wa->sm->skl($tariff.channel_count, 'канал', 'канала', 'каналов')}</b></li>
+										{if $tariff.channel_custom_count}<li><b>{$tariff.channel_custom_count|escape} {$wa->sm->skl($tariff.channel_custom_count, 'собственный канал', 'собственных канала', 'собственных каналов')}</b> можно создать</li>{/if}
+										<li>Одновременный просмотр с <b>{$tariff.device_count|escape} {$wa->sm->skl($tariff.device_count, 'устройства', 'устройств', 'устройств')}</b></li>
+									</ul>
+								</div>
+							</div>
+						{/foreach}
+					</div>
+					<div class="h15"></div>
+					<div class="h15"></div>
+					<h3>Выберите спопоб оплаты</h3>
+					<div class="h15"></div>
+					<div class="checkout-payment-methods">
+						{foreach $instances as $key => $method}
+							<div class="checkout-payment-method{if $preferred_method == $method.id} selected{/if}" data-method="{$method.id|escape}" data-method-name="{$method.name|escape}">
+								<div class="checkout-payment-method-caption">
+									<div class="checkout-payment-method-icon">
+										<img src="{$method.logo|escape}">
+									</div>
+									<div class="checkout-payment-method-name">{$method.name|escape}</div>
+								</div>
+								<div class="checkout-payment-method-description {if $preferred_method != $method.id} hidden{/if}">
+									{$method.description|escape}
+								</div>
+							</div>
+						{/foreach}
+					</div>
+					<div>
+						<div class="h15"></div>
+						<div class="h15"></div>
+						<h3>Перейти к оплате</h3>
+						<p>
+							Проверьте все данные.<br>
+							Нажмите "Оплатить", чтобы перейти на сайт платежной системы. После того, как Вы
+							перейдете на платежный шлюз, заказ будет действителен в течение часа. При оплате недействительного заказа
+							средства зачисляются на внутрисистемный счет. Не распространяется на оплату с внутрисистемного счета.
+							Платежная система может взимать дополнительную комиссию за перевод средств.
+						</p>
+						<form id="pay-form" class="checkout-form" action="pay/" method="GET">
+							{if isset($extend)}{if $extend}<input type="hidden" name="extend" value="{$extend}">{/if}{/if}
+							{if isset($change)}{if $change}<input type="hidden" name="change" value="{$change}">{/if}{/if}
+							<input type="hidden" name="type" value="{$checkout_mode|escape}">
+							<input type="hidden" name="tariff" value="{$preferred_tariff|escape}" class="checkout-preferred-tariff">
+							<input type="hidden" name="payment" value="{$preferred_method|escape}" class="checkout-preferred-method">
+							<div class="checkout-pay-check">Оплатить</div>
+							<input type="submit" class="sm-button-white" value="Оплатить →">
+						</form>
+					</div>
+
+					<script type="text/javascript">
+						$(document).ready(function() {
+							{if isset($change)}
+								{if $change}
+									var changeDiscount = {$current_tariff_amount.left_in_system};
+								{else}
+									var changeDiscount = 0;
+								{/if}
+							{else}
+								var changeDiscount = 0;
+							{/if}
+							$('#select-day-pay-form').select2({
+								dropdownCssClass : 'no-search'
+							});
+							$('#select-day-pay-form').on('change', function(){
+								var discount_k = parseInt($(this).find('option:selected').data('discount'));
+								$.each($('.checkout-tariff'),function () {
+									let val = $(this).data('clearprice');
+									let res = val - (val * discount_k/100);
+									res = res.toFixed(2) + ' руб.';
+									$(this).attr('data-price', res);
+								});
+								$.each($('.checkout-tariff-price'),function () {
+									let val = $(this).data('price');
+									let res = val - (val * discount_k/100);
+									$(this).find('span').html(res.toFixed(2));
+								});
+								payButtonText();
+							});
+							$('.checkout-tariff').click(function() {
+								if(!$(this).hasClass('selected')) {
+									$('.checkout-tariff').removeClass('selected');
+									$('.checkout-tariff-description').slideUp(200);
+									$(this).addClass('selected');
+									$(this).find('.checkout-tariff-description').slideDown(200);
+									$('.checkout-preferred-tariff').val($(this).attr('data-tariff'));
+									payButtonText();
+								}
+							});
+							
+							$('.checkout-payment-method').click(function() {
+								if(!$(this).hasClass('selected')) {
+									$('.checkout-payment-method').removeClass('selected');
+									$('.checkout-payment-method-description').slideUp(200);
+									$(this).addClass('selected');
+									$(this).find('.checkout-payment-method-description').slideDown(200);
+									$('.checkout-preferred-method').val($(this).attr('data-method'));
+									payButtonText();
+								}
+							});
+							
+							function payButtonText() {
+								var k = parseInt($('#select-day-pay-form').find('option:selected').val());
+								var internal_balance = parseFloat('{$user_balance_amount|escape}');
+								var cost = parseFloat($('.checkout-tariff.selected').attr('data-price'));
+								var method = parseInt($('.checkout-payment-method.selected').attr('data-method'));
+								console.log($('.checkout-tariff.selected').attr('data-price'));
+								var text = 'Вы покупаете тариф ' + $('.checkout-tariff.selected').attr('data-name') + ' за '+ (parseInt($('.checkout-tariff.selected').attr('data-clearprice'))*k-parseInt(changeDiscount)) + ' р., оплата: ' + $('.checkout-payment-method.selected').attr('data-method-name');
+								$('.checkout-pay-check').text(text);
+								if(method == 0 && internal_balance < cost) {
+									$('.checkout-form').find('input[type="submit"]').hide();
+									var warning = '<span class="sf-red"> - не хватает средств на внутрисистемном счете, выберите другой способ оплаты</span>';
+									$('.checkout-pay-check').html($('.checkout-pay-check').text() + warning);
+								}
+								else {
+									$('.checkout-form').find('input[type="submit"]').show();
+								}
+								{if !$is_bill_filled}
+									if(method == -1) {
+										$('.checkout-form').find('input[type="submit"]').hide();
+										var warning = '<span class="sf-red"> - заполните данные организации в <a href="{$wa->getUrl("sm/frontend/myProfile")}#company">личном кабинете</a></span>';
+										$('.checkout-pay-check').html($('.checkout-pay-check').text() + warning);
+									}
+									else {
+										$('.checkout-form').find('input[type="submit"]').show();
+									}
+								{/if}
+							}
+							payButtonText();
+						});
+					</script>
+				</div>
+			</div>
+			<div class="col sidebar">
+				{include file="`$wa_active_theme_path`/sidebar.html" inline}
+			</div>
+		</div>
+	</div>
+</div>

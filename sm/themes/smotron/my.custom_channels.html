@@ -1,0 +1,296 @@
+<div class="content">
+    <div class="container-fluid container data-main-content">
+        <div class="row">
+            <div class="col data-content">
+                <div class="row sm-breadcrumbs">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+                        »
+                    </div>
+                </div>
+                <h1>Мои каналы</h1>
+                <div class="h15"></div>
+                <div class="data-inner-content">
+                    <div class="sm-tab-block" data-level="1" data-block="channels-block">
+                        <ul class="sm-tabs-full non-phone-only border-0">
+                            <li class="selected my-channel-tab" data-block="channels">Каналы</li>
+                            <li class="my-channel-tab" data-block="video">Видеоролики</li>
+                        </ul>
+                    </div>
+                    <div class="h15"></div>
+                    <div class="profile-blocks">
+                        <div class="channels-block" data-block="channels">
+                            <div id="channel-add-button" class="sm-button-white">Добавить канал</div>
+                            <div id="channel-add-popup" class="sm-popup">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        Ваши видео:
+                                        <div id="modules">
+                                            {foreach $videos as $video}
+                                                <p class="drag" data-id="{$video.id}"><a class="btn btn-default">{$video.name}</a></p>
+                                            {/foreach}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        Канал:
+                                        <form id="channels-add-form" method="POST" action="{$wa->getUrl('sm/frontend/myCustomChannelsListSave')}">
+                                            <input type="text" name="channel_name" placeholder="Название канала">
+                                            <div id="dropzone"></div>
+                                        </form>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <button form="channels-add-form" class="btn btn-primary pull-right sm-button-white create-channel">Создать канал</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                function chDeleate(id = null){
+                                    action = "delete/?id="+id;
+                                    if(confirm('Удалить этот канал?')) {
+                                        $.post(action, '1=1', function(jData) {
+                                            if(jData.data.result == '1') {
+                                                window.location.reload();
+                                            }
+                                            else {
+                                                alert(jData.data.message);
+                                            }
+                                        }, 'json');
+                                    }
+                                    return false;
+                                }
+                            </script>
+                            <table id="user_channel" class="display mt25 test-display2">
+                                <thead>
+                                <tr>
+                                    <th>Имя канала</th>
+                                    <th>Статус</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="channels-block" style="display: none" data-block="video">
+                            <div id="video-button" class="sm-button-white">Загрузить</div>
+                            <div id="video-popup" class="sm-popup">
+                                <form id="upload-container" enctype="multipart/form-data" method="POST" action="{$wa->getUrl('sm/frontend/myVideoUpload')}">
+                                    <img id="upload-image" src="{$wa_theme_url}img/upload.png">
+                                    <div>
+                                        <input id="file-input" type="file" name="video" accept="video/*" />
+                                        <label for="file-input">Выберите файл</label>
+                                        <span style="margin: 0px;">или перетащите его сюда</span>
+                                    </div>
+                                </form>
+                                <div class="progress-block">
+
+                                </div>
+
+                                {*<form id="videoform" enctype="multipart/form-data" *}{*action="{$wa->getUrl('sm/frontend/myVideoUpload')}"*}{*>
+                                    <input id="video-file" type="file" name="video" accept="video/*" />
+                                    <div class="sm-button-white video-button-submit">Загрузить видео</div>
+                                    <input style="display:none;" type="submit" class="sm-button-white profile-photo-update-btn" value="Обновить фотографию">
+                                    <div class="form-message"></div>
+                                </form>*}
+                            </div>
+                            <script>
+                                function isDeleate(id = null){
+                                    action = "video/delete/?id="+id;
+                                    if(confirm('Удалить это видео?')) {
+                                        $.post(action, '1=1', function(jData) {
+                                            if(jData.data.result == '1') {
+                                                window.location.reload();
+                                            }
+                                            else {
+                                                alert(jData.data.message);
+                                            }
+                                        }, 'json');
+                                    }
+                                    return false;
+                                }
+                            </script>
+                            <table id="user_video" class="display mt25 test-display2">
+                                <thead>
+                                <tr>
+                                    <th>Имя</th>
+                                    <th>Длительность</th>
+                                    <th>Статус</th>
+                                    <th class="th30"></th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col sidebar">
+                {include file="`$wa_active_theme_path`/sidebar.html" inline}
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.drag').draggable({
+            appendTo: 'body',
+            helper: 'clone'
+        });
+
+        $('#channels-add-form').fSend( function(jData) {
+            if(jData.data.result =='1') {
+
+            }
+        });
+
+        $('#dropzone').droppable({
+            activeClass: 'active',
+            hoverClass: 'hover',
+            accept: ":not(.ui-sortable-helper)",
+            drop: function (e, ui) {
+                console.log(ui.draggable.data('id'));
+                var $el = $('<div class="drop-item"><input name="videos[]" value="'+ui.draggable.data('id')+'" hidden/>' + ui.draggable.text() + '</div>');
+                $el.append($('<button type="button" class="btn btn-default btn-xs remove"><i class="icon delete2"></i></button>').click(function () { $(this).parent().detach(); }));
+                $(this).append($el);
+            }
+        }).sortable({
+            items: '.drop-item',
+            sort: function() {
+                $( this ).removeClass( "active" );
+            }
+        });
+
+        $('#channel-add-button').on('click', function() {
+            $('#channel-add-popup').bPopup();
+        });
+
+        $('#video-button').on('click', function() {
+            $('#video-popup').bPopup();
+        });
+
+        var user_channels = $('#user_channel').dataTable( {
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [[25, 50], [25, 50]],
+            "ajax": "{$wa->getUrl('sm/frontend/myCustomChannelsList')}",
+            "order": [[ 0, "desc" ]],
+            "language":{
+                "sLengthMenu": "Показывать _MENU_ записей",
+                "sZeroRecords": "Нет записей, удовлетворяющих условиям поиска",
+                "sInfo": "Отображаются записи с _START_ до _END_ из _TOTAL_",
+                "sInfoEmpty": "Отображаются записи с 0 до 0 из 0",
+                "sInfoFiltered": "(отфильтровано из _MAX_ записей)",
+                "sSearch": "Поиск:",
+                "processing": "Обработка...",
+                "oPaginate": { "sNext": ">>", "sPrevious": "<<" }
+            }
+        });
+        var user_video = $('#user_video').dataTable( {
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [[25, 50], [25, 50]],
+            "ajax": "{$wa->getUrl('sm/frontend/myVideo')}",
+            "order": [[ 0, "desc" ]],
+            "language":{
+                "sLengthMenu": "Показывать _MENU_ записей",
+                "sZeroRecords": "Нет записей, удовлетворяющих условиям поиска",
+                "sInfo": "Отображаются записи с _START_ до _END_ из _TOTAL_",
+                "sInfoEmpty": "Отображаются записи с 0 до 0 из 0",
+                "sInfoFiltered": "(отфильтровано из _MAX_ записей)",
+                "sSearch": "Поиск:",
+                "processing": "Обработка...",
+                "oPaginate": { "sNext": ">>", "sPrevious": "<<" }
+            }
+        });
+        /*$('.video-button-submit').on('click',function(){
+            var data = new FormData($('#videoform')[0]);
+            $('.video').attr('disabled', true).val('Подождите, обрабатываю видео..');
+            $.ajax({
+                url: "{*$wa->getUrl('sm/frontend/myVideoUpload')*}",
+                data: data,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                type: "post",
+                success: function(jData) {
+                    if(jData.data.result === 1) {
+                        $('#file-error-msg').hide();
+                    } else{
+                        $('#file-error-msg').text(jData.data.message);
+                        $('#file-error-msg').show();
+                    }
+                }
+            });
+        });*/
+
+        var dropZone = $('#upload-container');
+
+        $('#file-input').focus(function() {
+            $('label').addClass('focus');
+        })
+            .focusout(function() {
+                $('label').removeClass('focus');
+            });
+
+        dropZone.on('drag dragstart dragend dragover dragenter dragleave drop', function(){
+            return false;
+        });
+
+        dropZone.on('dragover dragenter', function() {
+            dropZone.addClass('dragover');
+        });
+
+        dropZone.on('dragleave', function(e) {
+            let dx = e.pageX - dropZone.offset().left;
+            let dy = e.pageY - dropZone.offset().top;
+            if ((dx < 0) || (dx > dropZone.width()) || (dy < 0) || (dy > dropZone.height())) {
+                dropZone.removeClass('dragover');
+            }
+        });
+
+        dropZone.on('drop', function(e) {
+            dropZone.removeClass('dragover');
+            let files = e.originalEvent.dataTransfer.files;
+            sendFiles(files);
+        });
+
+        $('#file-input').change(function() {
+            let files = this.files;
+            sendFiles(files);
+        });
+
+        function sendFiles(files) {
+            let progress = $('.progress-block');
+            //let maxFileSize = 20971520‬;
+            let Data = new FormData();
+            $(files).each(function(index, file) {
+                if (( ((file.type == 'video/mp4') || (file.type == 'video/avi') && (typeof(file.name) != "undefined" && file.name !== null)))) {
+                    console.log(file);
+                    Data.append($('#file-input').attr('name'), file);
+                }
+            });
+            //var Data = new FormData($('#upload-container').get(0));
+            $.ajax({
+                url: dropZone.attr('action'),
+                type: dropZone.attr('method'),
+                data: Data,
+                contentType: false,
+                processData: false,
+                success: function(jData) {
+                    //alert ('Файлы были успешно загружены!');
+                    if(jData.data.result == 1){
+                        progress.append('<span>'+ Data.get('video').name + ' ' + jData.data.message +'</span>');
+                    }else{
+                        progress.append('<span>'+ Data.get('video').name + ' ' + jData.data.message +'</span>');
+                    }
+                }
+            });
+        }
+
+
+
+
+    });
+</script>

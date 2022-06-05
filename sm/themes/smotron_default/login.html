@@ -1,0 +1,29 @@
+<div class="content">
+    <div id="page" role="main">
+        <div class="sm-auth-popup" action="{$wa_app_url}login/">
+            <h3>[s`Log in`]</h3>
+            <form class="sm-auth-form" action="{$wa_app_url}login/">
+                <div class="form-group">
+                    <input id="sm_auth_email" type="text" placeholder="Введите ваш e-mail" name="email">
+                </div>
+                <div class="form-group">
+                    <input id="sm_auth_password" type="text" placeholder="[`Password`]" name="password">
+                </div>
+                {$wa->captcha()}
+                <input class="btn btn-primary" type="submit" value='[s`Log in`]'>
+                <div class="form-message" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $('.sm-auth-form').fSend( function(jData) {
+            if(jData.data.result =='1') {
+                window.location.href = jData.data.url;
+            }else if(jData.data.result =='2') {
+                window.location.href = jData.data.url;
+            }
+        });
+    });
+</script>

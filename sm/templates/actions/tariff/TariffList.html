@@ -1,0 +1,46 @@
+{foreach $tariffs as $tariff}
+    <tr class="list-group-item" id="{$tariff.id}">
+        <th value="{$tariff.sort}"><i class="sm-icon sort"></i></th>
+        <th value="{$tariff.sort}"><a href="?module=tariff&id={$tariff.id}"><i class="sm-icon edit"></i></a></th>
+        <th>{$tariff.id}</th>
+        <th>{$tariff.name|escape}</th>
+        <th>{$tariff.channel_count|escape} шт.</th>
+        <th>{$tariff.channel_custom_count|escape} шт.</th>
+        <th>{$tariff.device_count|escape}</th>
+        <th>{wa_currency($tariff.price,'RUB')}</th>
+    </tr>
+{/foreach}
+
+{*
+<div class="sm-row sortable">
+    {foreach $tariffs as $tariff}
+        <div class="tariff-wrapper sm-col-3" id="{$tariff.id}">
+            <div class="tariff-header">
+                <span>{$tariff.name}</span>
+            </div>
+            <div class="tariff-content">
+                <div class="field">
+                    <div class="name">Количество TV каналов:</div>
+                    <div class="value">{$tariff.base_range}</div>
+                </div>
+                <div class="field">
+                    <div class="name">Количество своих каналов:</div>
+                    <div class="value">{$tariff.custom_range}</div>
+                </div>
+                *}
+{*<div class="field">
+                    <div class="name">Описание:</div>
+                    <div class="value">{$tariff.description}</div>
+                </div>*}{*
+
+                <div class="field">
+                    <div class="name">Цена за месяц:</div>
+                    <div class="value">{wa_currency ($tariff.price, 'RUB','%{s}')}</div>
+                </div>
+            </div>
+            <div class="tariff-footer">
+                <a class="button green" href="?module=tariff&id={$tariff.id}">Редактировать</a>
+            </div>
+        </div>
+    {/foreach}
+</div>*}

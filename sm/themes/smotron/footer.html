@@ -1,0 +1,29 @@
+<div class="footer">
+	<div class="container-fluid container footer-inner">
+		<div class="row">
+			<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+				<div class="footer-logo">
+					<a href="{$wa_url}"><img src="{$wa_theme_url}img/smotron.png"></a>
+				</div>
+				<div class="footer-logo-disclaimer">
+					{$wa->block("footer.disclaimer")}
+				</div>
+			</div>
+			<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+				<div class="footer-links-caption">Клиентам</div>
+				{$wa->block("footer.customers")}
+			</div>
+			<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 r2">
+				<div class="footer-links-caption">О компании</div>
+				{$wa->block("footer.company")}
+			</div>
+			<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 r2">
+				<div class="footer-links-caption">Контакты</div>
+				<ul class="footer-contacts">
+					<li><a href="mailto:{$wa->block('email')|escape}">{$wa->block('email')|escape}</a></li>
+					<li><a href="tel:{$wa->block('phone')|escape}" class="footer-phone">{$wa->block('phone')|escape}</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

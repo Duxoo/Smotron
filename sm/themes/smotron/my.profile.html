@@ -1,0 +1,252 @@
+<script type="text/javascript" src="{$wa_theme_url}js/jquery.suggestions.js"></script>
+<link href="{$wa_theme_url}css/suggestions.css" type="text/css" rel="stylesheet"/>
+<div class="content">
+	<div class="container-fluid container data-main-content">
+		<div class="row">
+			<div class="col data-content">
+				<div class="row sm-breadcrumbs">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+						»
+					</div>
+				</div>
+				<h1>Профиль</h1>
+				<div class="h15"></div>
+				<div class="data-inner-content">
+					<div class="sm-tab-block" data-level="1" data-block="profile-block">
+						<ul class="sm-tabs-full non-phone-only">
+							<li class="selected" data-block="account">Аккаунт</li>
+							<li data-block="company">Данные счета</li>
+							<li data-block="photo">Фото</li>
+						</ul>
+						<div class="sm-tabs-mobile phone-only">
+							<div class="sm-tabs-mobile-selection" data-block="account">
+								<div class="sm-tabs-mobile-selection-arrow icon arrow-down-white"></div>
+								<span class="sm-tabs-mobile-selection-text">Аккаунт</span>
+							</div>
+							<ul class="sm-tabs-mobile-options">
+								<li style="display: none;" data-block="account">Аккаунт</li>
+								<li data-block="company">Данные счета</li>
+								<li data-block="photo">Фото</li>
+							</ul>
+						</div>
+					</div>
+					<div class="h15"></div>
+					<div class="profile-blocks">
+						<div class="profile-block" data-block="account">
+							<form action="{$wa->getUrl('sm/frontend/myProfileSave')}" class="sm-profile-data-form sm-form">
+								<div class="form-group">
+									<label for="sm_profile_email">Имя учетной записи</label>
+									<input type="text" class="form-control" id="sm_profile_name" aria-describedby="sm_profile_name_help" name="profile[name]" value="{$contact->get('firstname')|escape}">
+									<small id="sm_profile_name_help" class="form-text text-muted">Ваш псевдоним на сайте</small>
+								</div>
+								<div class="form-group">
+									<label for="sm_profile_email">Email адрес</label>
+									<div class="form-constant-value">{$contact->get('email', 'default')|escape}</div>
+									<small id="sm_profile_email_help" class="form-text text-muted">Этот email Вы указали при регистрации, через него можно восстановить пароль.</small>
+								</div>
+								<div class="form-check">
+									<input type="checkbox" class="form-check-input profile-password-change" id="sm_profile_change-password" name="profile[change_password]">
+									<label class="form-check-label" for="sm_profile_change-password">Сменить пароль</label>
+								</div>
+								<div class="password-change-group mt15" style="display: none;">
+									<div class="form-group">
+										<label for="sm_profile_npassword">Новый пароль</label>
+										<input type="password" class="form-control" id="sm_profile_npassword" aria-describedby="sm_profile_npassword_help" name="profile[npassword]">
+										<small id="sm_profile_npassword_help" class="form-text text-muted">Если Вы хотите сменить пароль, укажите новый пароль здесь</small>
+									</div>
+									<div class="form-group">
+										<label for="sm_profile_npassword2">Новый пароль еще раз</label>
+										<input type="password" class="form-control" id="sm_profile_npassword2" aria-describedby="sm_profile_npassword2_help" name="profile[npassword2]">
+										<small id="sm_profile_npassword2_help" class="form-text text-muted">Чтобы быть уверенными, что не ошиблись при вводе</small>
+									</div>
+									<div class="form-group">
+										<label for="sm_profile_password">Текущий пароль</label>
+										<input type="password" class="form-control" id="sm_profile_password" aria-describedby="sm_profile_password_help" name="profile[password]">
+										<small id="sm_profile_password_help" class="form-text text-muted">Требуется в целях безопасности, без него нельзя изменять эти учетные данные.</small>
+									</div>
+								</div>
+								<div class="h15"></div>
+								<input type="submit" class="sm-button-white" value="Сохранить">
+								<div class="form-message"></div>
+							</form>
+						</div>
+						<div class="profile-block" data-block="company" style="display: none;">
+							<p>
+								Чтобы иметь возможность оплачивать услуги Смотрон по счету для юридического лица,
+								заполните поля в этом разделе.
+							</p>
+							<form class="sm-form sm-user-company-form" action="{$wa->getUrl('sm/frontend/myProfileSaveCompany')}">
+								{foreach $jfields as $key => $field}
+								<div class="form-group">
+									<label for="sm_profile_jf_{$key}">{$field.name|escape}</label>
+									<input type="text" class="form-control {if !empty($field.class)}{$field.class|escape}{/if}" id="sm_profile_jf_{$key}" aria-describedby="sm_profile_jf_{$key}_help" name="company[{$key}]" {if !empty($field.dadata)}data-dadata="{$field.dadata|escape}"{/if} value="{$field.value|escape}">
+									{if !empty($field.hint)}
+									<small id="sm_profile_jf_{$key}_help" class="form-text text-muted">{$field.hint|escape}</small>
+									{/if}
+								</div>
+								{/foreach}
+								<div class="h15"></div>
+								<input type="submit" class="sm-button-white" value="Сохранить">
+								<div class="form-message"></div>
+							</form>
+						</div>
+						<div class="profile-block" data-block="photo" style="display: none;">
+							<script type="text/javascript" src="{$wa_app_static_url}js/cropper.js"></script>
+							<link rel="stylesheet" type="text/css" href="{$wa_app_static_url}css/cropper.css"/>
+							<div class="h15"></div>
+							<div class="h15"></div>
+							<div id="new-photo-preview" class="text-center"><img src="{$photo_url|escape}" alt="Аватар" class="profile-avatar profile-avatar-rounded"/></div>
+							<div class="h15"></div>
+							<form id="imageform" method="post" enctype="multipart/form-data">
+								<input id="fileselect" type="file" name="photo"/><i id="photo-loading-image" class="icon16 loading" style="margin-left:16px; display:none"></i>
+							</form>
+							<div class="h15"></div>
+							<span class="hint">После выбора файла, перетаскивайте и масштабируйте выделенную область, чтобы выбрать участок изображения для аватара.</span>
+							<div class="h15"></div>
+							<form action="{$wa->getUrl('sm/frontend/myProfileSaveImage')}" class="sm-profile-photo-form">
+								<input type="hidden" name="image[x1]">
+								<input type="hidden" name="image[y1]">
+								<input type="hidden" name="image[x2]">
+								<input type="hidden" name="image[y2]">
+								<input type="hidden" name="image[path]">
+								<input type="submit" class="sm-button-white profile-photo-update-btn" value="Обновить фотографию">
+								<div class="form-message"></div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col sidebar">
+				{include file="`$wa_active_theme_path`/sidebar.html" inline}
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var jcropper = null;
+
+		$('.profile-password-change').change(function() {
+			if($(this).prop('checked')) {
+				$('.password-change-group').show();
+			}
+			else {
+				$('.password-change-group').hide();
+			}
+		});
+
+		$('.sm-profile-data-form').fSend(function(jData) {
+			if(jData.data.result == '1') {
+				$('.header-user-menu-name').text(jData.data.name);
+			}
+		});
+
+		$('.sm-user-company-form').fSend(function(jData) {
+		});
+
+		$('.sm-profile-photo-form').fSend(function(jData) {
+			if(jData.data.result == '1') {
+				window.location.reload();
+			}
+		});
+
+		$('#fileselect').change(function() {
+            sendImage();
+        });
+
+		function sendImage() {
+			var data = new FormData($('#imageform')[0]);
+            $('.profile-photo-update-btn').attr('disabled', true).val('Подождите, обрабатываю фото..');
+			$.ajax({
+                url: "{$wa->getUrl('sm/frontend/imageUpload')}",
+                data: data,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                type: "post",
+                success: function(jData) {
+					if(jData.data.result === 1) {
+                        $('#file-error-msg').hide();
+						var img = $('img.profile-avatar');
+						img.removeClass('profile-avatar-rounded');
+						img.attr('src', jData.data.img_url);
+						if(jcropper === null) {
+							img.cropper({
+								aspectRatio: 1,
+								scalable: false,
+								zoomable: false,
+								crop: function(event) {
+									$('input[name="image[x1]"]').val(Math.round(event.detail.x));
+									$('input[name="image[y1]"]').val(Math.round(event.detail.y));
+									$('input[name="image[x2]"]').val(Math.round(event.detail.x + event.detail.width));
+									$('input[name="image[y2]"]').val(Math.round(event.detail.y + event.detail.height));
+								}
+							});
+							jcropper = img.data('cropper');
+						}
+						else {
+							jcropper.replace(jData.data.img_url);
+						}
+						$('input[name="image[path]"]').val(jData.data.img_path);
+					} else{
+					    $('#file-error-msg').text(jData.data.message);
+                        $('#file-error-msg').show();
+                    }
+					$('.profile-photo-update-btn').removeAttr('disabled').val('Обновить фотографию');
+                }
+            });
+        }
+
+		{if !empty($settings.bill_dadata_token)}
+		$('#sm_profile_jf_company').suggestions({
+			token: "{$settings.bill_dadata_token|escape}",
+			type: "PARTY",
+			onSelect: function(suggestion) {
+				$('.dadata-company').each(function() {
+					var code = $(this).attr('data-dadata');
+					if(typeof(code) != 'undefined') {
+						if(suggestion['data'][code] != 'undefined') {
+							$(this).val(suggestion['data'][code]);
+						}
+					}
+				});
+			}
+		});
+
+		$('#sm_profile_jf_address').suggestions({
+			token: "{$settings.bill_dadata_token|escape}",
+			type: "ADDRESS",
+			onSelect: function(suggestion) {
+				$('.dadata-address').each(function() {
+					var code = $(this).attr('data-dadata');
+					if(typeof(code) != 'undefined') {
+						if(suggestion['data'][code] != 'undefined') {
+							$(this).val(suggestion['data'][code]);
+						}
+					}
+				});
+				console.log(suggestion);
+			}
+		});
+
+		$('#sm_profile_jf_bank').suggestions({
+			token: "{$settings.bill_dadata_token|escape}",
+			type: "BANK",
+			onSelect: function(suggestion) {
+				$('.dadata-bank').each(function() {
+					var code = $(this).attr('data-dadata');
+					if(typeof(code) != 'undefined') {
+						if(suggestion['data'][code] != 'undefined') {
+							$(this).val(suggestion['data'][code]);
+						}
+					}
+				});
+			}
+		});
+		{/if}
+	});
+</script>

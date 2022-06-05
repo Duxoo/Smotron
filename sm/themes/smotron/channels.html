@@ -1,0 +1,42 @@
+<div class="content">
+    <div class="container-fluid container data-main-content">
+        <div class="row">
+            <div class="container data-content">
+                <div class="row sm-breadcrumbs">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+                        »
+                    </div>
+                </div>
+                <h1>ТВ КАНАЛЫ ДОСТУПНЫЕ ДЛЯ ВАС:</h1>
+                <div class="container-fluid container">
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="row">
+                                {foreach $data.channels as $channel}
+                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 sm-my-channel" data-channel="{$channel.id}">
+                                        <div class="home-channel-image" style="background: url('{$channel.image|escape}')"></div>
+                                        <div class="home-channel-name">{$channel.name|escape}</div>
+                                    </div>
+                                {/foreach}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col sidebar">
+                {include file="`$wa_active_theme_path`/sidebar.html" inline}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('.sm-my-channel').on('click',function(){
+            window.location.href = "{$wa->getUrl('sm/frontend/stream')}?target_channel="+$(this).data('channel');
+        });
+    });
+</script>

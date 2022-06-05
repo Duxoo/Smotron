@@ -1,0 +1,146 @@
+{if isset($tariff)}
+    <h1>ВАШ ТАРИФ: {if isset($tariff.name)}{$tariff.name|escape}{/if}</h1>
+    <div>
+        <span>По тарифу включено:</span>
+        <ul>
+            <li>{$tariff.base_range} готовых трансляции;</li>
+            <li>{$tariff.custom_range} обственных каналов;</li>
+
+        </ul>
+    </div>
+{/if}
+<div>
+    <span>{if isset($tariff)}Нужно больше?{else}Выберите тариф{/if}</span>
+    <p>{if isset($tariff)}Перейдите на тариф "премиум" или создайте свой собственный{/if}</p>
+    <div>
+        {if isset($tariff)}<div class="sm-choose-tariff">Улучшить тариф</div>{else}<div class="sm-choose-tariff">Выбрать тариф</div>{/if}
+        <div class="sm-create-custom-tariff">Создать свой тариф</div>
+    </div>
+</div>
+
+<div>
+    <h3>Возврат средств</h3>
+    <p>Вы можете вернуть средства за неиспользованный период. {if isset($refund_amount)}В данный момент сумма к возврату составляет {$refund_amount|wa_format_amount:'RUB'}{/if}</p>
+    {if isset($refund_amount)}
+        <div>Вернуть средства</div>
+    {/if}
+</div>
+<div class="sm-base-tariff-popup sm-popup">
+    <div class="sm-popup-close icon close-red b-close"></div>
+    <form id="sm-base-tariff" class="row" action="{$wa_app_url}my/tariff/choose_base_tariff/">
+        {foreach $base_tariffs as $base_tariff}
+            <div class="tariff-wrapper col-4" id="{$base_tariff.id}">
+                <div class="tariff-header">
+                    <span>{$base_tariff.name}</span>
+                </div>
+                <div class="tariff-content">
+                    <div class="field">
+                        <div class="name">Количество TV каналов:</div>
+                        <div class="value">{$base_tariff.base_range}</div>
+                    </div>
+                    <div class="field">
+                        <div class="name">Количество своих каналов:</div>
+                        <div class="value">{$base_tariff.custom_range}</div>
+                    </div>
+                    <div class="field">
+                        <div class="name">Описание:</div>
+                        <div class="value">{$base_tariff.description}</div>
+                    </div>
+                    <div class="field">
+                        <div class="name">Цена за месяц:</div>
+                        <div class="value">{wa_currency ($base_tariff.price, 'RUB','%{s}')}</div>
+                    </div>
+                </div>
+                <input type="radio" name="tariff-id" value="{$base_tariff.id}" {if $base_tariff.id == $tariff}checked{/if}>
+            </div>
+        {/foreach}
+        <div class="col-12">
+            <input type="submit" class="sm-button" value="Выбрать">
+        </div>
+        <span class="form-message"></span>
+    </form>
+</div>
+
+<div class="sm-custom-tariff-popup sm-popup">
+    <div class="sm-popup-close icon close-red b-close"></div>
+    <form id="tariff-form" class="sm-form mt10 tariff-form" method="post" action="{$wa_app_url}my/tariff/custom_tariff_create/">
+        <div class="tariff-header">
+            <span>Свой тариф</span>
+        </div>
+        <div class="field">
+            <div class="name">Количество потоков</div>
+            <div class="value">
+                <input id="tariff_range" type="range" name="tariff[base_range]" min="0" max="20" step="1" value="">
+                <p class="d-inline-block">: <span id="tariff_label"></span></p>
+            </div>
+        </div>
+        <div class="field">
+            <div class="name">Количество своих каналов</div>
+            <div class="value">
+                <input id="tariff_custom_range" type="range" name="tariff[custom_range]" min="0" max="20" step="1" value="">
+                <p class="d-inline-block">: <span id="tariff_clabel"></span></p>
+            </div>
+        </div>
+        <div class="field">
+            <div class="name">Каналы входящие в тариф</div>
+            <div class="value">
+                <select multiple id="tariff_channels" type="text" name="tariff[channels][]" required>
+                    {foreach $channels as $key => $channel}
+                        <option value="{$channel.id}">{$channel.name|escape}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="field">
+            <div class="name">Месячная стоимость</div>
+            <div class="value">
+                <span class="price"><span class="price-currency"></span> р.</span>
+            </div>
+        </div>
+        <div class="field">
+            <input type="submit" class="sm-button submit" value="Создать">
+            <span class="form-message"></span>
+        </div>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('#sm-base-tariff').fSend( function(jData) {
+            if(jData.data.result =='1') {
+                window.location.reload();
+            }
+        });
+
+        $('.sm-choose-tariff').on('click', function(){
+            $('.b-close').trigger('click');
+            $('.sm-base-tariff-popup').bPopup({
+                transition: 'slideDown'
+            });
+            return false;
+        });
+
+        $('.sm-create-custom-tariff').on('click', function(){
+            $('.b-close').trigger('click');
+            $('.sm-custom-tariff-popup').bPopup({
+                transition: 'slideDown'
+            });
+            return false;
+        });
+
+        $('#tariff_channels').select2();
+
+        var slider = document.getElementById("tariff_range");
+        var output = document.getElementById("tariff_label");
+        output.innerHTML = slider.value;
+        slider.oninput = function() {
+            output.innerHTML = this.value;
+        };
+        var cslider = document.getElementById("tariff_custom_range");
+        var coutput = document.getElementById("tariff_clabel");
+        coutput.innerHTML = cslider.value;
+        cslider.oninput = function() {
+            coutput.innerHTML = this.value;
+        };
+    });
+</script>

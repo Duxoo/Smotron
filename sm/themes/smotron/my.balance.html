@@ -1,0 +1,70 @@
+<div class="content">
+	<div class="container-fluid container data-main-content">
+		<div class="row">
+			<div class="col data-content">
+				<div class="row sm-breadcrumbs">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+						»
+					</div>
+				</div>
+				{if !isset($error)}
+					<h1>Баланс</h1>
+					<div class="data-inner-content">
+						<div class="balance-block" data-block="history">
+							<div class="user-balance-amount-wrap">
+								<span class="user-balance-amount-disclaimer">Сейчас на счете</span>
+								<span class="user-balance-amount">{wa_currency($user_data.balance, '', '%2i')} руб.</span>
+							</div>
+							<table id="user_balance_history" class="zebra display mt25">
+								<thead>
+									<tr>
+										<th>Дата</th>
+										<th>Сумма, руб.</th>
+										<th>Комментарий</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+					<script type="text/javascript">
+						$(document).ready(function() {
+							var dt_balance_history = $('#user_balance_history').dataTable( {
+								"processing": true,
+								"serverSide": true,
+								"lengthMenu": [[25, 50], [25, 50]],
+								"ajax": "history/",
+								"order": [[ 0, "desc" ]],
+								"language":{
+									"sLengthMenu": "Показывать _MENU_ записей",
+									"sZeroRecords": "Нет записей, удовлетворяющих условиям поиска",
+									"sInfo": "Отображаются записи с _START_ до _END_ из _TOTAL_",
+									"sInfoEmpty": "Отображаются записи с 0 до 0 из 0",
+									"sInfoFiltered": "(отфильтровано из _MAX_ записей)",
+									"sSearch": "Поиск:",
+									"processing": "Обработка...",
+									"oPaginate": { "sNext": ">>", "sPrevious": "<<" }
+								}
+							});
+						});
+					</script>
+				{else}
+					<h1>Ошибка</h1>
+					<div class="h15"></div>
+					<div class="data-inner-content">
+						<div class="system-error">
+							<div class="system-error-icon icon error"></div>
+							<div class="system-error-text">Баланс недоступен для этого аккаунта</div>
+						</div>
+					</div>
+				{/if}
+			</div>
+			<div class="col sidebar">
+				{include file="`$wa_active_theme_path`/sidebar.html" inline}
+			</div>
+		</div>
+	</div>
+</div>

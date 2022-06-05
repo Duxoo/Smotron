@@ -1,0 +1,71 @@
+<div class="content">
+    <div class="container-fluid container data-main-content">
+        <div class="row">
+            <div class="col data-content">
+                <div class="row sm-breadcrumbs">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+                            <span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+                                <a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+                                <meta itemprop="position" content="1"/>
+                            </span>
+                        »
+                    </div>
+                </div>
+                <h1>Пользователи</h1>
+                <div class="data-inner-content">
+                    <a href="{$wa->getUrl('sm/frontend')}my/access/subuser/" class="sm-button-white">Создать</a>
+                    <table id="sm_subuser" class="sm-table display">
+                        <thead>
+                        <tr>
+                            <th class="w100">Имя</th>
+                            <th class="w100">Логин</th>
+                            <th class="th30">Редактировать</th>
+                            <th class="th30">Удалить</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col sidebar">
+                {include file="`$wa_active_theme_path`/sidebar.html" inline}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function() {
+        var sm_subuser = $('#sm_subuser').dataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [[25, 50], [25, 50]],
+            "ajax": "subuser/list/",
+            "order": [[0, "asc"]],
+            "language": {
+                "sLengthMenu": "Показывать _MENU_ записей",
+                "sZeroRecords": "Нет записей, удовлетворяющих условиям поиска",
+                "sInfo": "Отображаются записи с _START_ до _END_ из _TOTAL_",
+                "sInfoEmpty": "Отображаются записи с 0 до 0 из 0",
+                "sInfoFiltered": "(отфильтровано из _MAX_ записей)",
+                "sSearch": "Поиск:",
+                "processing": "Обработка...",
+                "oPaginate": { "sNext": ">>", "sPrevious": "<<" }
+            }
+        });
+    });
+    function deleteSubuser(e,id) {
+        console.log(e);
+
+        let url = $(e).data('href');
+        if(confirm('Удалить этот пост?')) {
+            $.post(""+url, 'sub_user_id=' + id, function (jData) {
+                if (jData.data.result == '1') {
+                    window.location.href = '/my/access/';
+                } else {
+                    alert(jData.data.message);
+                }
+            }, 'json');
+        };
+    };
+</script>

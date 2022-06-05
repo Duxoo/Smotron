@@ -1,0 +1,38 @@
+<div class="content">
+	<div class="container-fluid container data-main-content">
+		<div class="row">
+			<div class="col data-content">
+				<div class="row sm-breadcrumbs">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+						»
+						<span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+							<a href="{$wa->getUrl('sm/frontend/checkout')}" itemprop="url"><span itemprop="title">Покупка подписки</span></a>
+						</span>
+						»
+					</div>
+				</div>
+				<h1>Оплата заказа</h1>
+				<div class="data-inner-content">
+					{if $payment !== null && $payment_id != -1}
+						{$payment}
+					{else}
+						<p>
+							Скачайте и оплатите счет. Как только мы увидим данные об оплате, сразу же активируем выбранный Вами тариф.
+						</p>
+						<a href="{$wa->getUrl('sm/frontend/bill', ['bill_id' => $bill_id])}" target="blank" class="sm-button-white">Скачать счет</a>
+						<div class="h15"></div>
+						<div class="h15"></div>
+						<a href="{$wa_url}">На главную страницу</a>
+					{/if}
+				</div>
+			</div>
+			<div class="col sidebar">
+				{include file="`$wa_active_theme_path`/sidebar.html" inline}
+			</div>
+		</div>
+	</div>
+</div>

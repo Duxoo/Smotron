@@ -1,0 +1,53 @@
+<div class="content">
+	<div class="container-fluid container data-main-content">
+		<div class="row">
+			<div class="col data-content">
+				<div class="row sm-breadcrumbs">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+						»
+					</div>
+				</div>
+				<h1>{if $status_info.is_paid}Успешная оплата{else}Оплата пока не получена{/if}</h1>
+				<div class="data-inner-content">
+					<div class="payment-result-disclaimer">
+						<div class="payment-result-icon icon {$status_info.type}"></div>
+						<div class="payment-result-text">
+							<b>
+							{if $status_info.is_paid}
+								Оплата успешно принята! Ваш заказ обработан.
+							{else}
+								Платежная система еще не сообщила о том, что была оплата.
+							{/if}
+							</b>
+							<br><br>
+							{if $status_info.is_paid}
+								{if !$status_info.to_balance}
+									Ваш тариф <b>"{$order_data.tariff_name|escape}"</b> готов к использованию и уже подключен! 
+								{else}
+									{$status_info.message|escape}, поэтому мы не смогли активировать покупку, и зачислили средства на Ваш
+									внутрисистемный счет, с которого можно оплатить другие покупки.
+								{/if}
+								<br></br>
+								<b>Спасибо, что Вы с нами!</b>
+							{else}
+								<b>Если платеж был неудачным</b>, просто перейдите к <a href="{$wa->getUrl('sm/frontend/checkout')}">оплате подписки</a> повторно и попробуйте еще раз.<br><br>
+								<b>Если Вы произвели платеж</b>, и средства списались с Вашего счета, <b>не волнуйтесь</b>!
+								Платежная система может задерживать данные о платеже до 20 минут, но, как только она
+								сообщит нам об успешной оплате, мы тут же обработаем Вашу покупку!
+								Однако, если оплата произведена более 20 минут назад, но Вы не получили покупку, обязательно свяжитесь с нами, мы все решим!<br><br>
+								<a href="#" class="sm-button-white" onclick="window.location.reload(); return false;">Проверить платеж повторно</a>
+							{/if}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col sidebar">
+				{include file="`$wa_active_theme_path`/sidebar.html" inline}
+			</div>
+		</div>
+	</div>
+</div>

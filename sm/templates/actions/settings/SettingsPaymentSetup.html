@@ -1,0 +1,81 @@
+{if !empty($error)}
+    <div class="sm-fullscreen-error">
+		<div class="sm-fullscreen-error-icon icon warning"></div>
+		<div class="sm-fullscreen-error-text">{$error|escape}</div>
+	</div>
+{else}
+<h2 class="sm-tab-caption sm-block">
+	<span>{$plugin.name|escape}</span>
+	<a href="#" class="sm-caption-back-url payment-home">К списку методов</a>
+</h2>
+<form class="payment-plugin-settings-form sm-form mt10" action="?module=settings&action=paymentSave">
+	{if isset($plugin.status) && !empty($plugin.id)}
+	<div class="float-right mt10 relative z9">
+		<a href="#" class="delete-payment-plugin pointer" data-plugin="{$plugin.id}"><i class="inline-icon icon delete"></i> Удалить метод оплаты</a>
+	</div>
+	{/if}
+	<div class="field-group">
+		<div class="field">
+			<div class="name">
+			<label for="s-payment-plugin-status">Включен</label>
+			</div>
+			<div class="value">
+                <input name="payment[id]" type="hidden" value="{$plugin_id|escape}">
+                <input name="payment[plugin]" type="hidden" value="{$plugin.plugin|escape}">
+				<input name="payment[status]" type="checkbox"{if !empty($plugin.status)} checked="checked"{/if} id="s-payment-plugin-status" value="1">
+			</div>
+		</div>
+		<div class="field">
+			<div class="name">
+				<label for="s-payment-plugin-name">Имя</label>
+			</div>
+			<div class="value">
+				<input name="payment[name]" type="text" value="{$plugin.name|escape}" class="bold" id="s-payment-plugin-name">
+			</div>
+		</div>
+		<div class="field">
+			<div class="name">
+				<label for="s-payment-plugin-logo">URL логотипа</label>
+			</div>
+			<div class="value">
+				<input name="payment[logo]" type="text" class="long" value="{$plugin.logo|default:''|escape}" id="s-payment-plugin-logo">
+                {if !empty($plugin.logo)}<img src="{$plugin.logo}"  class="sm-payment-plugin-logo">{/if}
+				<br>
+				<span class="hint">{sprintf('[`Коллекция бесплатных иконок: <a href="%s" target="_blank">%s</a> <i class="icon10 new-window"></i>`]','[`http://www.webasyst.com/help/729/payment-shipping-icons/`]','[`http://www.webasyst.com/help/729/payment-shipping-icons/`]')}</span>
+			</div>
+		</div>
+		<div class="field">
+			<div class="name">
+				Описание
+			</div>
+			<div class="value">
+				<textarea name="payment[description]">{$plugin.description|escape}</textarea>
+				<br>
+				<span class="hint">[`HTML. Payment option description is shown to customer during the checkout.`]</span>
+			</div>
+		</div>
+	</div>
+	
+    <!-- CUSTOM PAYMENT MODULE PARAMS -->
+    <div class="field-group">{$settings_html} </div>
+    <div class="field-group">{$guide_html}</div>
+
+	<div class="field-group">
+		<div class="field">
+			<input type="submit" class="sm-button" value="[`Save`]">&nbsp&nbsp&nbsp[`or`] <a href="#" class="load-payment-list">[`cancel`]</a>
+		</div>
+	</div>
+</form>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.payment-plugin-settings-form').fSend(function(jData) {
+			if(jData.data.result == '1') {
+				$('.load-payment-list').trigger('click');
+			}
+			else {
+				alert(jData.data.message);
+			}
+		});
+	});
+</script>
+{/if}

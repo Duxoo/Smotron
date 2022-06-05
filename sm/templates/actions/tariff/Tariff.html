@@ -1,0 +1,214 @@
+<h1 class="sm-tab-caption sm-block">
+  <span>{if $id}Тариф {$data.name|escape}{else}Новый тариф{/if}</span>
+  <a href="?module=settings#tariffs"  class="sm-caption-back-url mr15">Все тарифы</a>
+</h1>
+<form id="tariff-form" class="sm-form mt10 tariff-form" method="post" action="?module=tariff&action=save">
+  <input type="hidden" name="tariff[id]" value="{if isset($id)}{$id|escape}{/if}">
+    <div class="field">
+        <div class="name">Название</div>
+        <div class="value">
+            <input id="tariff_name" type="text" name="tariff[name]" required value="{if isset($data.name)}{$data.name|escape}{/if}">
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">URL адрес</div>
+        <div class="value">
+            <input id="tariff_url" type="text" name="tariff[url]" required value="{if isset($data.url)}{$data.url|escape}{/if}">
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Количество потоков</div>
+        <div class="value">
+            <input id="tariff_range" type="range" name="tariff[device_count]" min="1" max="20" step="1" value="{if isset($data.device_count)}{$data.device_count|escape}{/if}">
+            <p class="d-inline-block">: <span id="tariff_label"></span></p>
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Количество своих каналов</div>
+        <div class="value">
+            <input id="tariff_custom_range" type="range" name="tariff[channel_custom_count]" min="0" max="20" step="1" value="{if isset($data.channel_custom_count)}{$data.channel_custom_count|escape}{/if}">
+            <p class="d-inline-block">: <span id="tariff_clabel"></span></p>
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Каналы входящие в тариф</div>
+        <div class="value">
+            {*<select multiple id="tariff_channels" type="text" name="tariff[channels][]" required>
+                {foreach $channels as $key => $channel}
+                    <option value="{$channel.id}" {if isset($data.channels[$channel.id])}selected{/if}>{$channel.name}</option>
+                {/foreach}
+            </select>*}
+            <input id="search" type="text" name="search" placeholder="Поиск...">
+            {*<label class="check-all"><input type="checkbox"><span>Выбрать все</span></label>*}
+            <button type="button" class="check-all" data-class="sm-active-checkbox">Выбрать все</button>
+            <div class="sm-checkbox-list">
+                {foreach $channels as $key => $channel}
+                    <label class="checkbox-label sm-active-checkbox" data-name="{$channel.name}">
+                        <input type="checkbox" name="tariff[channels][]" value="{$channel.id}"  {if isset($channel.checked) && ($channel.checked == true)}checked{/if}>
+                        <span class="button {if isset($channel.checked) && ($channel.checked == true)}green{else}gray{/if}">{$channel.name|escape}</span>
+                    </label>
+                {/foreach}
+            </div>
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Месячная стоимость</div>
+        <div class="value">
+            <input id="tariff_price" type="text" name="tariff[price]" required value="{if isset($data.price)}{$data.price|escape}{/if}">
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Краткое описание</div>
+        <div class="value">
+          <textarea id="description" name="tariff[description]" rows="20" form="tariff-form" placeholder ="{if isset($data.description)}{$data.description|escape}{/if}">
+            {if isset($data.description)}{$data.description|escape}{/if}
+          </textarea>
+        </div>
+    </div>
+    {*<div class="field">
+        <div class="name">Опубликован</div>
+        <div class="value">
+            <input id="tariff_disabled" type="checkbox" name="tariff[disabled]" {if $data.disabled == 1}value="0"{else}checked value="1"{/if}>
+        </div>
+    </div>*}
+    <div class="field">
+        <input type="submit" class="sm-button" value="Сохранить">{if $id} &nbsp или <a href="#" class="tariff-delete">удалить</a>{/if}
+        <span class="form-message"></span>
+    </div>
+</form>
+<script>
+    $(document).ready(function() {
+        function translit(str) {
+            str = str.toLowerCase().replace(/<.+>/, ' ').replace(/\s+/, ' ');
+            var c = {
+                'а':'a', 'б':'b', 'в':'v', 'г':'g', 'д':'d',
+                'е':'e', 'ё':'jo', 'ж':'zh', 'з':'z', 'и':'i',
+                'й':'j', 'к':'k', 'л':'l', 'м':'m', 'н':'n',
+                'о':'o', 'п':'p', 'р':'r', 'с':'s', 'т':'t',
+                'у':'u', 'ф':'f', 'х':'h', 'ц':'c', 'ч':'ch',
+                'ш':'sh', 'щ':'shch', 'ъ':'', 'ы':'y', 'ь':'',
+                'э':'e', 'ю':'ju', 'я':'ja', ' ':'_', ';':'',
+                ':':'', ',':'', '—':'_', '–':'_', '.':'',
+                '«':'', '»':'', '"':'', "'":'', '@':'','+':'plus'
+            };
+            var newStr = new String();
+            for (var i = 0; i < str.length; i++) {
+                ch = str.charAt(i);
+                newStr += ch in c ? c[ch] : ch;
+            }
+            return newStr;
+        };
+        $('#tariff_name').keyup(function () {
+            let str = $(this).val();
+            $('#tariff_url').val(translit(str));
+        });
+
+        function checkElements(e) {
+            let chebox = e.parent().find('input');
+            if(e.hasClass('green')){
+                e.removeClass('green');
+                e.addClass('gray');
+                chebox.removeAttr('checked');
+            }else {
+                e.removeClass('gray');
+                e.addClass('green');
+            }
+        };
+
+        $("#search").keyup(function(){
+            _this = this;
+
+            $.each($(".sm-checkbox-list .checkbox-label"), function() {
+                if($(this).data('name').toLowerCase().indexOf($(_this).val().toLowerCase()) === -1) {
+                    $(this).removeClass('sm-active-checkbox');
+                    $(this).addClass('sm-hide-checkbox');
+                } else {
+                    $(this).addClass('sm-active-checkbox');
+                    $(this).removeClass('sm-hide-checkbox');
+                }
+            });
+        });
+
+        $('.check-all').on('click',function () {
+            $(".sm-checkbox-list .checkbox-label.sm-active-checkbox").each(function() {
+                checkElements($(this).find('span.button'));
+            });
+        });
+
+        $('span.button').on('click',function() {
+            checkElements($(this));
+        });
+
+
+
+        var slider = document.getElementById("tariff_range");
+        var output = document.getElementById("tariff_label");
+        output.innerHTML = slider.value;
+        slider.oninput = function() {
+            output.innerHTML = this.value;
+        };
+        var cslider = document.getElementById("tariff_custom_range");
+        var coutput = document.getElementById("tariff_clabel");
+        coutput.innerHTML = cslider.value;
+        cslider.oninput = function() {
+            coutput.innerHTML = this.value;
+        };
+
+        $(function(){
+            $('#description').redactor();
+        });
+        $('.tariff-form').submit(function () {
+            var form = $(this);
+            var formData = new FormData($(this)[0]), action = $(this).attr('action');
+            $.ajax({
+                contentType: false, // важно - убираем форматирование данных по умолчанию
+                processData: false, // важно - убираем преобразование строк по умолчанию
+                data: formData,
+                dataType: "json",
+                type: "post",
+                url : action,
+                success: function(jData){
+                    var message_field = form.find('.form-message');
+                    if(jData.data.message) {
+                        message_field.html(jData.data.message);
+                    }
+                    if(jData.data.result == '1') {
+                        message_field.css('color', 'green');
+                    }
+                    else {
+                        message_field.css('color', 'red');
+                        if(jData.data.fields) {
+                            $.each(jData.data.fields, function(index, value) {
+                                console.log(index);
+                                if(value.length) {
+                                    form.find('.field-error[data-field="'+index+'"]').html(value);
+                                }
+                                form.find('.field-error[data-field="'+index+'"]').show();
+                            });
+                        }
+                    }
+                    if(jData.data.result == '1') {
+                        if(jData.data.new == '1') {
+                            window.location.href='?module=tariff&id='+jData.data.id;
+                        }
+                    }
+                }
+            });
+            return false;
+        });
+
+        $('.tariff-delete').click(function() {
+            if(confirm('Удалить этот пост?')) {
+                $.post('?module=tariff&action=delete', 'id={$id|escape}', function(jData) {
+                    if(jData.data.result == '1') {
+                        window.location.href = '?module=settings#tariffs';
+                    }
+                    else {
+                        alert(jData.data.message);
+                    }
+                }, 'json');
+            }
+            return false;
+        });
+    });
+</script>

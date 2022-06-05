@@ -1,0 +1,168 @@
+<h1 class="sm-tab-caption"><span>[s`My profile`]</span></h1>
+<ul class="sm-upper-tabs data-menu">
+    <li class="selected" data-tab="main_data">
+        <a href="#main_data">Основное</a>
+    </li>
+    <li data-tab="entity">
+        <a href="#entity">Юр. лицо</a>
+    </li>
+</ul>
+<div class="sm-profile-content">
+    <div class="sm-tab-content" id="wa-my-info-wrapper" data-tab="main_data">
+        <h2 class="sm-tab-caption sm-block"><span>Основные настройки</span></h2>
+        <div class="wa-form" id="wa-my-info-read-wrapper"{if !empty($form->errors)} style="display: none;"{/if}>
+            {foreach $user_info as $id => $info}
+                {if isset($info.value)}
+                    <div class="wa-field">
+                        <div class="wa-name">{$info.name}</div>
+                        <div class="wa-value">{$info.value}</div>
+                    </div>
+                {/if}
+            {/foreach}
+            <div class="wa-field">
+                <div class="wa-value">
+                    <input type="button" class="button" id="wa-my-info-edit" value="[s`Edit`]"/>
+                </div>
+            </div>
+        </div>
+        <form action="" enctype="multipart/form-data" method="post"{if empty($form->errors)} style="display: none;"{/if} id="wa-my-info-edit-wrapper">
+            <div class="wa-form">
+
+                {$form->html()}
+
+                <div class="wa-field">
+                    <div class="wa-value">
+                        <input type="submit" value="[s`Save`]">
+                        <a href="#" id="wa-my-info-cancel">[s`cancel`]</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="sm-tab-content" data-tab="entity" style="display: none;">
+        <h2 class="sm-tab-caption sm-block"><span>Юридическое лицо</span></h2>
+
+        <div class="wa-form" id="wa-my-info-read-wrapper"{if empty($form->errors)} style="display: none;"{/if}>
+            {foreach $entity_info as $id => $info}
+                {if $info.display}
+                    {if isset($info.value)}
+                        <div class="wa-field">
+                            <div class="wa-name">{$info.name}</div>
+                            <div class="wa-value">{$info.value}</div>
+                        </div>
+                    {/if}
+                {/if}
+            {/foreach}
+            <div class="wa-field">
+                <div class="wa-value">
+                    <input type="button" class="button" id="wa-my-info-edit" value="[s`Edit`]"/>
+                </div>
+            </div>
+        </div>
+
+        <form id="sm-save-entity-form" action="{$wa_app_url}save/entity/" enctype="multipart/form-data" method="post" {if !empty($entity_info.error)} style="display: none;"{/if}>
+            {foreach $entity_info as $id => $info}
+                {if $info.display}
+                    {if isset($info.name)}
+                        <div class="field">
+                            <div class="name">{$info.name}</div>
+                            <div class="value">
+                                <input id="{$id}" type="text" name="data[{$id}]"  value="{if isset($info.name)}{$info.value|escape}{/if}">
+                            </div>
+                        </div>
+                    {/if}
+                {/if}
+            {/foreach}
+            <div class="field">
+                <input type="submit" class="ps-button" value="Сохранить">
+                <span class="form-message"></span>
+            </div>
+        </form>
+
+    </div>
+</div>
+<script>
+    (function () {
+        var $wrapper = $('#wa-my-info-wrapper'),
+            $form = $wrapper.find('#wa-my-info-edit-wrapper'),
+            $info = $wrapper.find('#wa-my-info-read-wrapper'),
+            $password = $form.find('.wa-field-password'),
+            $photo = $form.find('.wa-field-photo');
+
+        if ($password.length) {
+            var $change_link = $('<span><a href="#">[s`Change password`]</a></span>'),
+                $password_inputs = $password.find('p');
+
+            $password.find('.wa-value').prepend($change_link);
+
+            $change_link.on('click', 'a', function(e) {
+                e.preventDefault();
+                $change_link.hide();
+                $password_inputs.slideDown();
+            });
+        }
+
+        if ($photo.length) {
+            var $delete_photo = $('<span><a href="#">[s`Delete photo`]</a></span>'),
+                $photo_input = $photo.find('[name="profile[photo]"]'),
+                $user_photo = $photo.find('img:first'),
+                $default_photo = $photo.find('img:last');
+
+            if ($user_photo[0] != $default_photo[0]) {
+                $default_photo
+                    .hide()
+                    .after($delete_photo);
+
+                $delete_photo.on('click', 'a', function(e) {
+                    e.preventDefault();
+                    $default_photo.show();
+                    $user_photo.hide();
+                    $delete_photo.hide();
+                    $photo_input.val('');
+                });
+            } else {
+                $default_photo.show();
+            }
+        }
+
+        $wrapper
+            .on('click', '#wa-my-info-edit', function (e) {
+                e.preventDefault();
+                if ($password.length) {
+                    $change_link.show();
+                    $password_inputs.hide();
+                }
+                if ($photo.length) {
+                    if ($user_photo[0] != $default_photo[0]) {
+                        $delete_photo.show();
+                        $default_photo.hide();
+                    }
+                }
+                $form.show();
+                $info.hide();
+            })
+            .on('click', '#wa-my-info-cancel', function(e){
+                e.preventDefault();
+                $form.hide();
+                $info.show();
+            });
+    })();
+    $(document).ready(function() {
+
+        $('#sm-save-entity-form').fSend( function(jData) {
+            if(jData.data.result =='1') {
+                window.location.reload();
+            }
+        });
+
+        // HASH LOAD
+        $('.sm-upper-tabs li').click(function () {
+            location.hash = '#' + $(this).attr('data-tab');
+        });
+        var hash = window.location.hash.replace('#', '');
+        if ($('.sm-upper-tabs li[data-tab="' + hash + '"]').length) {
+            $('.sm-upper-tabs li[data-tab="' + hash + '"]').trigger('click');
+        }
+    });
+</script>

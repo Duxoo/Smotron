@@ -1,0 +1,74 @@
+<h2 class="sm-tab-caption sm-block">
+	<span>Настройка методов оплаты</span>
+	<div class="sm-payment-plugin-list float-right relative">
+		<a href="#" class="add-payment-method sm-caption-back-url">Добавить новый способ оплаты</a>
+		<ul class="sm-payment-methods">
+			{foreach $plugins as $id => $plugin}
+			<li>
+				<a href="#" class="set-payment-plugin no-decoration" data-plugin="{$id|escape}">
+					{if empty($plugin.icon.16)}
+						{smHelper::getIcon('ss payment-bw')}
+					{else}
+						{smHelper::getIcon($plugin.icon.16)}
+					{/if}
+					{$plugin.name|escape}
+				</a>
+			</li>
+			{/foreach}
+			{if !empty($installer)}
+			<li class="bordered-top text-center">
+				<a href="#" class="search-payment-plugins">Поиск плагинов оплаты..</a>
+			</li>
+			{/if}
+		</ul>
+	</div>
+</h2>
+<div class="load-payment-list" style="display: none;"></div>
+<div class="payment-ajax mt10">
+	<i class="icon16 loading"></i>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.set-payment-plugin').live('click', function() {
+			var url = '?module=settings&action=paymentSetup&plugin_id='+$(this).attr('data-plugin');
+			loadPaymentForm(url);
+			return false;
+		});
+		
+		$('.search-payment-plugins').click(function() {
+			var url = '{$wa_url}{$backend_url|escape}/installer/?module=plugins&action=view&slug=wa-plugins/payment&return_hash=#payment'
+			loadPaymentForm(url);
+			return false;
+		});
+		
+		$('.delete-payment-plugin').live('click', function() {
+			if(confirm('Удалить способ оплаты безвозвратно?')) {
+				$.post('?module=settings&action=paymentDelete', 'plugin_id='+$(this).attr('data-plugin'), function(jData) {
+					if(jData.data.result == '1') {
+						loadPaymentList();
+					}
+					else {
+						alert(jData.data.message);
+					}
+				}, 'json');
+			}
+			return false;
+		});
+		
+		$('.load-payment-list').live('click',function() {
+			loadPaymentList();
+			return false;
+		});
+		
+		function loadPaymentForm(url) {
+			$('.payment-ajax').html('<i class="icon16 loading"></i>');
+			$('.payment-ajax').load(url);
+		}
+		
+		function loadPaymentList() {
+			$('.payment-ajax').html('<i class="icon16 loading"></i>');
+			$('.payment-ajax').load('?module=settings&action=paymentList');
+		}
+		loadPaymentList();
+	});
+</script>

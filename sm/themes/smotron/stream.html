@@ -1,0 +1,103 @@
+<!--stream.html-->
+{if !isset($data.target)}{$data.target = 0}{/if}
+<div class="container sm-data-content">
+    <div class="row sm-breadcrumbs">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+            »
+        </div>
+    </div>
+    <div class="row">
+        <div class="sm-tv-wrap col-xl-9 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 mt15">
+                <div class="sm-stream-tittle">
+                    <div class="sm-stream-caption mt15">
+                        <div class="sm-stream-heading">Стрим</div>
+                        <div class="sm-stream-channel-name">{$data.channels[$data.target].name}</div>
+                    </div>
+                </div>
+                {if isset($data.channels[$data.target].fl_channel_name)}
+                    {smFlussonicApi::test($data.channels[$data.target].fl_channel_name, $data.token)}
+                {/if}
+            </div>
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12">
+                <div class="clear-both mt15"></div>
+                <div class="epg-block"></div>
+            </div>
+        </div>
+
+        <div class="sm-channel-wrap col-xl-3 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 mt15">
+            <div class="sm-channel-head mt15">
+                <div id="sm-channel-search" class="sm-chanel-anemated">
+                    <div class="icon search"></div>
+                    <span>Поиск</span>
+                </div>
+                <div id="sm-channel-w" class="sm-chanel-anemated">
+                    <div class="icon square-menu"></div>
+                    <span>Все телеканалы</span>
+                </div>
+                <input id="sm-input-search" type="text" name="search" placeholder="Поиск...">
+            </div>
+            <div id="sm-channel-list">
+                {foreach $data.channels as $key => $channel}
+                    <div class="sm-channel {if $data.channels[$data.target].fl_channel_name == $channel.fl_channel_name}active{/if} sm-channel-visible" data-name="{$channel.name}" data-channel="{$channel.fl_channel_name}">
+                        <div class="sm-channel-image-wrapper">
+                            <div class="sm-channel-list-image" style="background: url({$channel.image}) center/contain no-repeat;">{*{$channel.fl_channel_name}*}</div>
+                        </div>
+                        <div class="sm-channel-desc">
+                            <div class="sm-channel-name">{$channel.name}</div>
+                            <div class="epg-now">Сейчас идет - ...</div>
+                        </div>
+                    </div>
+                {/foreach}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready( function() {
+        /*$('#main_tv').on('scroll', function(e){
+            console.lof(e);
+            e.stopPropagation();
+        });*/
+        $('#sm-channel-w').on('click', function(){
+            window.location.href = "{$wa->getUrl('sm/frontend/streamChannels')}";
+        });
+        $("#sm-input-search").keyup(function(){
+            _this = this;
+            console.log($(_this).val().toLowerCase());
+            $.each($(".sm-channel"), function() {
+                if($(this).data('name').toLowerCase().indexOf($(_this).val().toLowerCase()) === -1) {
+                    $(this).data('name');
+                    $(this).removeClass('sm-channel-visible');
+                } else {
+                    $(this).addClass('sm-channel-visible');
+                }
+            });
+        });
+
+        $('#sm-channel-search').on('click',function() {
+            $('#sm-input-search').trigger("focus");
+        });
+
+        var token ='?token={$data.token}';
+
+        function getEpg(c,day){
+            if(day === null){ day = 1; }
+            else{ day = 2; }
+            $('.epg-block').load('/stream/epg/?channel='+c+'&token='+token+'&day='+day);
+        };
+
+        getEpg('{$data.channels[$data.target].fl_channel_name}', null);
+
+        $(".sm-channel").click(function() {
+            $(".sm-channel").removeClass("active");
+            $(this).addClass("active");
+            $("#main_tv").attr('src', "https://stream.smotron.tv/" + $(this).attr("data-channel") + "/embed.html"+token);
+            getEpg($(this).attr("data-channel"));
+        });
+    });
+</script>

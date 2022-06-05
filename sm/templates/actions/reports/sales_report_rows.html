@@ -1,0 +1,42 @@
+{*
+ * This template is included in ReportSales.html as a subtemplate,
+ * as well as used separately to load additional rows via XHR.
+ *}
+{foreach $table_data as $row}
+    <tr>
+        <td class="column-name" style="text-align: left;">{strip}
+                {if !empty($row.icon_class)}
+                    <i class="icon16 {$row.icon_class}"></i>
+                {/if}
+                {$row.name|escape}
+            {/strip}</td>
+        <td class="align-right column-order_count" style="text-align: left;">
+            {$row.order_count}
+            {*{foreach $abt_rows as $abt_variant_name => $abt_row}
+                <br><span class="hint">{$abt_variant_name|escape}: {$abt_row.order_count}</span>
+            {/foreach}*}
+        </td>
+        <td class="align-right column-sales" style="text-align: left;">
+            {wa_currency($row.sales, $def_cur, '%2{h}')}
+            {*{foreach $abt_rows as $abt_variant_name => $abt_row}
+                <br><span class="hint">{$abt_variant_name|escape}: {wa_currency($abt_row.sales, $def_cur, '%2{h}')}</span>
+            {/foreach}*}
+        </td>
+        <td class="align-right column-average_order" style="text-align: left;">
+            {if $row.order_count > 0}{wa_currency($row.sales/$row.order_count, $def_cur, '%2{h}')}{else}<span class="gray">&mdash;</span>{/if}
+            {*{foreach $abt_rows as $abt_variant_name => $abt_row}
+                <br><span class="hint">{$abt_variant_name|escape}:
+                    {if $abt_row.order_count > 0}{wa_currency($abt_row.sales/$abt_row.order_count, $def_cur, '%2{h}')}{else}<span class="gray">&mdash;</span>{/if}
+                </span>
+            {/foreach}*}
+        </td>
+        <td class="align-right column-profit" style="text-align: left;">
+            {wa_currency($row.profit, $def_cur, '%2{h}')}
+            {*{foreach $abt_rows as $abt_variant_name => $abt_row}
+                <br><span class="hint">{$abt_variant_name|escape}: {wa_currency($abt_row.profit, $def_cur, '%2{h}')}</span>
+            {/foreach}*}
+        </td>
+
+    </tr>
+{/foreach}
+

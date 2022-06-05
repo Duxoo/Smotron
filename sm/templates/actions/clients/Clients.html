@@ -1,0 +1,92 @@
+<h1 class="sm-tab-caption sm-block"><span>Клиенты</span></h1>
+<ul class="sm-upper-tabs data-menu mt10">
+    <li class="selected" data-tab="list">
+        <a href="#list">Список</a>
+    </li>
+    <li data-tab="promocode">
+        <a href="#promocode">Промокоды</a>
+    </li>
+    {*<li data-tab="tariffs">
+        <a href="#tariffs">Констркутор тарифов</a>
+    </li>
+    <li data-tab="payment">
+        <a href="#payment">Оплата</a>
+    </li>
+    <li data-tab="bill">
+        <a href="#bill">Выставление счета</a>
+    </li>*}
+</ul>
+<div class="sm-clients-content mt10">
+    <div class="sm-tab-content" data-tab="list">
+        <h2 class="sm-tab-caption sm-block"><span>Список клиентов</span></h2>
+        <table id="dt_clients" class="sm-table">
+            <thead>
+            <tr>
+                <th class="th30">ID</th>
+                <th>ФИО</th>
+                <th>Тариф</th>
+                <th>Дата окончания подписки</th>
+                <th>Баланс</th>
+                <th>id flussonic</th>
+                <th>Токен flussonic</th>
+                <th>Почта</th>
+                <th>Реферальный код</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="sm-tab-content" data-tab="promocode" style="display: none">
+        <h2 class="sm-tab-caption sm-block"><span>Промокоды</span><a href="?module=clients&action=promocode" class="float-right"><i class="sm-icon add"></i></a></h2>
+        <table id="dt_promocode" class="sm-table">
+            <thead>
+            <tr>
+                <th>Название</th>
+                <th>Код</th>
+                <th>Статус</th>
+                <th>Оставшиеся количество использований</th>
+                <th>Дата окончания действия промокода</th>
+            </tr>
+            </thead>
+            <tbody id="listWithHandle" class="tariff-list"></tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        var dt_clients = $('#dt_clients').dataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [[25, 50], [25, 50]],
+            "ajax": "?module=clients&action=list",
+            "order": [[0, "asc"]],
+            "language": {
+                "sLengthMenu": "Показывать _MENU_ записей",
+                "sZeroRecords": "Нет записей, удовлетворяющих условиям поиска",
+                "sInfo": "Отображаются записи с _START_ до _END_ из _TOTAL_",
+                "sInfoEmpty": "Отображаются записи с 0 до 0 из 0",
+                "sInfoFiltered": "(отфильтровано из _MAX_ записей)",
+                "sSearch": "Поиск:",
+                "processing": "Обработка...",
+                "oPaginate": { "sNext": ">>", "sPrevious": "<<" }
+            }
+        });
+        var dt_promocode = $('#dt_promocode').dataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [[25, 50], [25, 50]],
+            "ajax": "?module=clients&action=promocodeList",
+            "order": [[0, "asc"]],
+            "language": {
+                "sLengthMenu": "Показывать _MENU_ записей",
+                "sZeroRecords": "Нет записей, удовлетворяющих условиям поиска",
+                "sInfo": "Отображаются записи с _START_ до _END_ из _TOTAL_",
+                "sInfoEmpty": "Отображаются записи с 0 до 0 из 0",
+                "sInfoFiltered": "(отфильтровано из _MAX_ записей)",
+                "sSearch": "Поиск:",
+                "processing": "Обработка...",
+                "oPaginate": { "sNext": ">>", "sPrevious": "<<" }
+            }
+        });
+    });
+</script>

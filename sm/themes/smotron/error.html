@@ -1,0 +1,65 @@
+{$error_h1 = 'Упс.. Страница не найдена.'}
+{if isset($error_title)}{$error_h1 = $error_title}{/if}
+<div class="content">
+	<div class="container-fluid container data-main-content">
+		<div class="row">
+			<div class="col data-content">
+				<div class="row sm-breadcrumbs">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" itemscope itemtype="http://schema.org/BreadcrumbList">
+						<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+							<a href="{$wa_url}" itemprop="item"><span itemprop="name">Главная</span></a>
+							<meta itemprop="position" content="1"/>
+						</span>
+						»
+						{if isset($breadcrumbs)}
+							{foreach $breadcrumbs as $key => $breadcrumb}
+								<span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+									<a href="{$breadcrumb.url|escape}" itemprop="url"><span itemprop="title">{$breadcrumb.name|escape}</span></a>
+								</span>
+								»
+							{/foreach}
+						{/if}
+					</div>
+				</div>
+				<h1>{$error_h1|escape}</h1>
+				<div class="data-inner-content">
+					<div class="system-error">
+						<div class="system-error-icon icon error"></div>
+						<div class="system-error-text">{ifempty($error, 'Произошла ошибка')|escape}</div>
+					</div>
+					{if isset($error_button)}
+						<div class="system-error-link">
+							<a href="{$error_button.url|escape}" class="{ifempty($error_button.class, 'sm-button-white')|escape}">{$error_button.text|escape}</a>
+						</div>
+					{/if}
+					{if isset($error_link)}
+						<div class="system-error-link">
+							<a href="{$error_link.url|escape}" class="{ifempty($error_link.class, 'sm-button-white')|escape}">{$error_link.text|escape}</a>
+						</div>
+					{/if}
+				</div>
+				{if !isset($error_no_disclaimer)}
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+							<p>Не удалось найти страницу, которую Вы запрашиваете.</p>
+							<p>Это могло случиться по одной из следующих причин:</p>
+							<ul>
+								<li>Вы ошиблись при наборе адреса страницы (URL);</li>
+								<li>Вы перешли по «битой» (неработающей, неправильной) ссылке;</li>
+								<li>Запрашиваемой страницы никогда не было на сайте или она была удалена или перемещена.</li>
+							</ul>
+							<p>Мы приносим свои извинения за доставленные неудобства и предлагаем следующие пути:</p>
+							<ul>
+								<li>Проверьте правильность написания адреса страницы (URL);</li>
+								<li>Вы можете перейти на <a href="{$wa_url}">главную страницу</a>.</li>
+							</ul>
+						</div>
+					</div>
+					{/if}
+			</div>
+			<div class="col sidebar">
+				{include file="`$wa_active_theme_path`/sidebar.html" inline}
+			</div>
+		</div>
+	</div>
+</div>
